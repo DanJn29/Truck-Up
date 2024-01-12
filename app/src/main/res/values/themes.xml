@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.TruckUp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/dark_green</item>
+
+    </style>
+
+    <style name="Theme.TruckUp" parent="Base.Theme.TruckUp" />
+</resources>
