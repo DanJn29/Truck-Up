@@ -12,7 +12,8 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="261dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
         android:layout_gravity="top"
         android:scaleType="centerCrop"
         android:src="@drawable/logo2" />
@@ -20,7 +21,8 @@
     <LinearLayout
         android:id="@+id/linear2"
         android:layout_width="match_parent"
-        android:layout_height="800dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
         android:background="@drawable/rounded_corner"
         android:orientation="vertical"
         android:padding="25dp">
@@ -63,6 +65,7 @@
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_gravity="center"
+            android:layout_marginTop="2dp"
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -121,8 +124,8 @@
             android:id="@+id/sign_up_now"
             android:text="Sign Up"
             android:gravity="center"
-            android:layout_marginTop="4dp"
-            android:textSize="18dp"
+           android:textSize="18dp"
+            android:paddingTop="2dp"
             android:textColor="@color/dark_green"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
