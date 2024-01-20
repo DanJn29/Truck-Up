@@ -84,6 +84,10 @@ public class Register extends AppCompatActivity {
                                     sendEmailVerification();
                                     Toast.makeText(Register.this, "Account created. Please check your email for verification.",
                                             Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(getApplicationContext(), Login.class);{
+                                        startActivity(intent);
+                                        finish();
+                                    }
                                 } else {
                                     Toast.makeText(Register.this, "Authentication failed: " + task.getException().getMessage(),
                                             Toast.LENGTH_SHORT).show();
@@ -105,6 +109,7 @@ public class Register extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Email verification sent successfully
                                 // You can handle success here, or it will automatically redirect to login (depending on your app flow)
+
                             } else {
                                 // Failed to send verification email
                                 Toast.makeText(Register.this, "Failed to send verification email: " + task.getException().getMessage(),

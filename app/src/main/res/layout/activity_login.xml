@@ -94,7 +94,7 @@
             android:layout_height="55dp"
             android:layout_marginTop="12dp"
             android:backgroundTint="#177103"
-            android:hint="LOG IN"
+            android:hint="SIGN IN"
             android:textColorHint="@color/white"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@+id/progressBar"
