@@ -15,9 +15,6 @@
         android:theme="@style/Theme.TruckUp"
         tools:targetApi="31">
         <activity
-            android:name=".constraint_login"
-            android:exported="false" />
-        <activity
             android:name=".Register"
             android:exported="false" />
         <activity

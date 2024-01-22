@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:background="@color/green1"
     android:orientation="vertical"
-    tools:context=".Login">
+    android:gravity="center"
+    tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,7 +26,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,12 +58,37 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_details"
-            app:layout_constraintVertical_bias="0.021">
+            app:layout_constraintVertical_bias="0.015">
 
         </Button>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/green2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:fabCradleMargin="10dp"
+        app:fabCradleRoundedCornerRadius="50dp"
+        tools:ignore="BottomAppBar">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:labelVisibilityMode="labeled"
+            android:background="@android:color/transparent"
+            app:menu="@menu/bottom_menu" />
+
+
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+
 
 
 </LinearLayout>
