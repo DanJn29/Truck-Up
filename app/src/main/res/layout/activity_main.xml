@@ -1,94 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/Linear1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green1"
-    android:orientation="vertical"
-    android:gravity="center"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
     tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <Button
+        android:id="@+id/logout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="4">
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="180dp"
+        android:backgroundTint="#177103"
+        android:hint="LOG OUT"
+        android:textColorHint="@color/white"
+        android:textSize="20sp">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="top"
-            android:src="@drawable/logo2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    </Button>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/user_details"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:background="@drawable/rounded_corner"
-        android:padding="25dp">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Hello World!" />
 
-        <TextView
-            android:id="@+id/user_details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Hello World!"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:backgroundTint="#177103"
-            android:hint="LOG OUT"
-            android:textColorHint="@color/white"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_details"
-            app:layout_constraintVertical_bias="0.015">
-
-        </Button>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/green2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:fabCradleMargin="10dp"
-        app:fabCradleRoundedCornerRadius="50dp"
-        tools:ignore="BottomAppBar">
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        android:clipToPadding="false"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        app:contentInsetStart="0dp"
+        app:fabAlignmentMode="center"
+        app:fabAnchorMode="embed"
+        app:fabAnimationMode="scale"
+        app:fabCradleMargin="0dp"
+        app:fabCradleRoundedCornerRadius="0dp"
+        app:fabCradleVerticalOffset="0dp"
+        app:removeEmbeddedFabElevation="true">
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            android:layout_width="wrap_content"
+            android:id="@+id/nvMain"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:labelVisibilityMode="labeled"
+            android:layout_gravity="start"
+            android:animateLayoutChanges="true"
             android:background="@android:color/transparent"
+            android:hapticFeedbackEnabled="true"
+            android:visibility="visible"
+            app:itemIconSize="20dp"
+            app:labelVisibilityMode="unlabeled"
             app:menu="@menu/bottom_menu" />
-
-
     </com.google.android.material.bottomappbar.BottomAppBar>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:contentDescription="btn_add"
+        app:elevation="2dp"
+        app:layout_anchor="@id/bottomAppBar"
+        app:srcCompat="@drawable/baseline_add_24" />
 
 
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
