@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "997760840848",
+    "project_id": "truck-up-1eaeb",
+    "storage_bucket": "truck-up-1eaeb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997760840848:android:4bde103725f896348cd415",
+        "android_client_info": {
+          "package_name": "com.example.truckup"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDktA5LEqJzbvx8J0bdZprJXENqGoKen8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
