@@ -1,9 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.TruckUp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
+        <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/green1</item>
         <item name="android:windowLightStatusBar">true</item>
 
     </style>
+
+    <style name="Theme.TruckUp" parent="Base.Theme.TruckUp" />
 </resources>

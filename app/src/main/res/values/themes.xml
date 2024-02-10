@@ -3,6 +3,8 @@
     <style name="Base.Theme.TruckUp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/green1</item>
+        <item name="colorPrimaryContainer">@color/primary_container</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
         <item name="android:windowLightStatusBar">true</item>
 
     </style>
