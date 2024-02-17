@@ -14,14 +14,14 @@
         android:layout_height="match_parent"
         android:layout_weight="4">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_picture"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/rounded_corner3"
             android:src="@drawable/blank_profile"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.MyApp.Image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -77,6 +77,40 @@
         android:layout_weight="1"
         android:background="@drawable/rounded_corner2"
         android:padding="25dp">
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tab_layout"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
+            android:background="#FFFFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Posts" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Trucks" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Favourites" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 
         <Button
