@@ -6,27 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="18dp"
         android:text="Privacy"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="20sp"
+        android:textColor="@color/gray1"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/PrivacyPolicy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:backgroundTint="@android:color/transparent"
         android:text="Privacy Policy"
-        android:textSize="22sp"
+        android:textColor="@color/darker_gray"
+        android:textSize="18sp"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.046"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -34,7 +40,7 @@
         android:id="@+id/view"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="12dp"
         android:background="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -47,46 +53,58 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
         android:text="Account"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="20sp"
+        android:textColor="@color/gray1"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
+        app:layout_constraintHorizontal_bias="0.068"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/changeUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Change Username"
-        android:textSize="22sp"
+        android:background="?android:attr/selectableItemBackground"
+        android:backgroundTint="@android:color/transparent"
+        android:text="Change Username "
+        android:textColor="@color/darker_gray"
+        android:textSize="18sp"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView1" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/changePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Change Password"
-        android:textSize="22sp"
+        android:background="?android:attr/selectableItemBackground"
+        android:backgroundTint="@android:color/transparent"
+        android:text="Change Password "
+        android:textColor="@color/darker_gray"
+        android:textSize="18sp"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/changeUsername" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/deleteAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Delete Account"
-        android:textSize="22sp"
+        android:background="?android:attr/selectableItemBackground"
+        android:backgroundTint="@android:color/transparent"
+        android:text="Delete Account "
+        android:textColor="@color/darker_gray"
+        android:textSize="18sp"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/changePassword" />
 
@@ -95,15 +113,15 @@
         android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#177103"
         android:hint="LOG OUT"
         android:textColorHint="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.046"
+        app:layout_constraintHorizontal_bias="0.057"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_details">
+        app:layout_constraintTop_toBottomOf="@+id/deleteAccount">
 
     </Button>
 
@@ -111,12 +129,12 @@
         android:id="@+id/user_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="12dp"
         android:text="Hello World!"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.038"
+        app:layout_constraintHorizontal_bias="0.122"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deleteAccount" />
+        app:layout_constraintTop_toBottomOf="@+id/logout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

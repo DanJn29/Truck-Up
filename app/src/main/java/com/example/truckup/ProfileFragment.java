@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -60,25 +61,22 @@ public class ProfileFragment extends Fragment {
             }
         }).attach();
 
-        ImageView settingsImageView = view.findViewById(R.id.settings);
-
-        settingsImageView.setOnClickListener(new View.OnClickListener() {
+        ImageButton settingsImageButton = view.findViewById(R.id.settings);
+        settingsImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                // Create an Intent to navigate to SettingsActivity
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                // Start the new activity
-                startActivity(intent);
+            public void onClick(View v) {
+                onImageButtonClick(v);
             }
         });
 
-
         return view;
+    }
 
-
-
-
-
+    public void onImageButtonClick(View view) {
+        // Create an Intent to navigate to SettingsActivity
+        Intent intent = new Intent(getActivity(), SettingsActivity.class);
+        // Start the new activity
+        startActivity(intent);
     }
 
 
