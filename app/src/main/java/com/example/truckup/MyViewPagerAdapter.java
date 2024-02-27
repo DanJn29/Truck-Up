@@ -17,7 +17,7 @@ public class MyViewPagerAdapter extends FragmentStateAdapter {
             case 0:
                 return new PostsFragment();
             case 1:
-                return new TrucksFragment();
+                return new Trucks_postsFragment();
             case 2:
                 return new FavouritePostsFragment();
             default:
