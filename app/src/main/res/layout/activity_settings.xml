@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="0dp"
+    android:paddingLeft="0dp"
     tools:context=".SettingsActivity">
 
 
@@ -22,7 +24,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/PrivacyPolicy"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="?android:attr/selectableItemBackground"
@@ -31,8 +33,7 @@
         android:textColor="@color/darker_gray"
         android:textSize="18sp"
         android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:gravity="start"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -62,7 +63,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/changeUsername"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="?android:attr/selectableItemBackground"
@@ -71,6 +72,8 @@
         android:textColor="@color/darker_gray"
         android:textSize="18sp"
         android:textStyle="normal"
+        android:gravity="start"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +81,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/changePassword"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="?android:attr/selectableItemBackground"
@@ -87,6 +90,7 @@
         android:textColor="@color/darker_gray"
         android:textSize="18sp"
         android:textStyle="normal"
+        android:gravity="start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,7 +98,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/deleteAccount"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="?android:attr/selectableItemBackground"
@@ -103,6 +107,7 @@
         android:textColor="@color/darker_gray"
         android:textSize="18sp"
         android:textStyle="normal"
+        android:gravity="start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
