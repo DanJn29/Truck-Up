@@ -3,7 +3,11 @@ package com.example.truckup;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class Register extends AppCompatActivity {
 
-    EditText editTextEmail, editTextPassword;
+    EditText editTextEmail, editTextPassword, editTextUsername, repeatPassword;
     Button buttonReg;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
@@ -51,6 +55,23 @@ public class Register extends AppCompatActivity {
         buttonReg = findViewById(R.id.sign_up);
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.sign_in_now);
+        editTextUsername = findViewById(R.id.username_et);
+        repeatPassword = findViewById(R.id.repeatPassword_et);
+
+
+
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (Character.isWhitespace(source.charAt(i)) || source.charAt(i) == '$' || source.charAt(i) == '%' || source.charAt(i) == '>') {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
+        editTextUsername.setFilters(new InputFilter[] { filter });
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,17 +85,52 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                String email, password;
+                String email, password, username, repeatPass;
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
+                username = String.valueOf(editTextUsername.getText());
+                repeatPass = String.valueOf(repeatPassword.getText());
 
-                if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                    Toast.makeText(Register.this, "Enter Email and Password", Toast.LENGTH_SHORT).show();
+                boolean isValid = true;
+
+                if (TextUtils.isEmpty(username)) {
+                    editTextUsername.setError("Please enter your username");
                     progressBar.setVisibility(View.GONE);
-                    return;
+                    isValid = false;
                 }
 
-                mAuth.createUserWithEmailAndPassword(email, password)
+
+                if (!email.contains("@") || !email.contains(".")) {
+                    editTextEmail.setError("Please enter a valid email address.");
+                    progressBar.setVisibility(View.GONE);
+                    isValid = false;
+                }
+
+
+                if (password.length() < 5) {
+                    editTextPassword.setError("Password must be more than 5 characters");
+                    progressBar.setVisibility(View.GONE);
+                    isValid = false;
+                }
+
+                if (password.contains(" ")) {
+                    editTextPassword.setError("Your password should not contain spaces.");
+                    progressBar.setVisibility(View.GONE);
+                    isValid = false;
+                }
+
+                if (password.length() > 64) {
+                    editTextPassword.setError("Your password can have at most 64 characters.");
+                    progressBar.setVisibility(View.GONE);
+                    isValid = false;
+                }
+                if(!password.equals(repeatPass)) {
+                    repeatPassword.setError("Passwords do not match");
+                    progressBar.setVisibility(View.GONE);
+                    isValid = false;
+                }
+
+                  if(isValid){mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -89,11 +145,10 @@ public class Register extends AppCompatActivity {
                                         finish();
                                     }
                                 } else {
-                                    Toast.makeText(Register.this, "Authentication failed: " + task.getException().getMessage(),
-                                            Toast.LENGTH_SHORT).show();
+                                    editTextEmail.setError(task.getException().getMessage());
                                 }
                             }
-                        });
+                        });}
             }
         });
     }

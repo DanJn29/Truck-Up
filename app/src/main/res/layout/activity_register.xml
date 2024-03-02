@@ -34,11 +34,34 @@
         android:background="@drawable/rounded_corner"
         android:padding="25dp">
 
+
+        <EditText
+            android:id="@+id/username_et"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/custom_username_icon"
+            android:drawablePadding="12dp"
+            android:ems="10"
+            android:hint="Username"
+            android:inputType="textEmailAddress"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </EditText>
+
+
         <EditText
             android:id="@+id/email_et"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/custom_input"
             android:drawableStart="@drawable/custom_email_icon"
             android:drawablePadding="12dp"
@@ -51,7 +74,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/username_et">
 
         </EditText>
 
@@ -65,7 +88,7 @@
             android:drawablePadding="12dp"
             android:ems="10"
             android:hint="Password"
-            android:inputType="textPassword"
+            android:inputType="textPassword|textNoSuggestions"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:textSize="14sp"
@@ -76,6 +99,28 @@
         </EditText>
 
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/repeatPassword_et"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/custom_lock_icon"
+            android:drawablePadding="12dp"
+            android:ems="10"
+            android:hint="Repeat Password"
+            android:inputType="textPassword"
+            app:endIconMode="password_toggle"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/password_et">
+
+        </com.google.android.material.textfield.TextInputEditText>
+
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
@@ -83,24 +128,24 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/password_et"
-            app:layout_constraintStart_toStartOf="@+id/password_et"
-            app:layout_constraintTop_toBottomOf="@+id/password_et" />
+            app:layout_constraintEnd_toEndOf="@+id/repeatPassword_et"
+            app:layout_constraintStart_toStartOf="@+id/repeatPassword_et"
+            app:layout_constraintTop_toBottomOf="@+id/repeatPassword_et" />
 
 
         <Button
             android:id="@+id/sign_up"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="15dp"
             android:backgroundTint="#177103"
             android:hint="SIGN UP"
             android:textColorHint="@color/white"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="@+id/progressBar"
-            app:layout_constraintStart_toStartOf="@+id/progressBar"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar" />
-
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/repeatPassword_et" />
 
         <View
             android:id="@+id/view"
@@ -111,7 +156,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sign_up"
-            app:layout_constraintVertical_bias="0.964"/>
+            app:layout_constraintVertical_bias="0.964" />
 
         <TextView
             android:id="@+id/have_account"
