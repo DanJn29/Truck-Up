@@ -66,33 +66,52 @@ public class Login extends AppCompatActivity {
                 String email, password;
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
+                boolean isValid = true;
 
-                if(TextUtils.isEmpty(email)){
-                    Toast.makeText(Login.this, "Enter Email", Toast.LENGTH_SHORT).show();
-                    return;
+
+                if (!email.contains("@") || !email.contains(".")) {
+                    editTextEmail.setError("Please enter a valid email address.");
+                    progressBar.setVisibility(View.GONE);
+                    isValid = false;
                 }
-                if(TextUtils.isEmpty(password)){
-                    Toast.makeText(Login.this, "Enter Password", Toast.LENGTH_SHORT).show();
-                    return;
+
+                if (password.length() < 5) {
+                    editTextPassword.setError("Password must be more than 5 characters");
+                    progressBar.setVisibility(View.GONE);
+                    isValid = false;
                 }
 
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
+                if (password.contains(" ")) {
+                    editTextPassword.setError("Your password should not contain spaces.");
+                    progressBar.setVisibility(View.GONE);
+                    isValid = false;
+                }
 
-                                    Toast.makeText(Login.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                if (password.length() > 64) {
+                    editTextPassword.setError("Your password can have at most 64 characters.");
+                    progressBar.setVisibility(View.GONE);
+                    isValid = false;
+                }
+
+                if(isValid) {
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    progressBar.setVisibility(View.GONE);
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+
+                                        Toast.makeText(Login.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
             }
         });
     }

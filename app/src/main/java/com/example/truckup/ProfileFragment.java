@@ -4,13 +4,16 @@ import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import android.Manifest;
+import com.yalantis.ucrop.UCrop;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -28,10 +31,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-
-
-
-
+import java.io.File;
 
 
 public class ProfileFragment extends Fragment {
@@ -39,6 +39,7 @@ public class ProfileFragment extends Fragment {
     TabLayout tabLayout;
     ViewPager2 viewPager2;
     MyViewPagerAdapter myViewPagerAdapter;
+
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_REQUEST_CODE = 100;
 
@@ -106,15 +107,35 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            // Handle the selected image
-            // For example, you can set the selected image to your ImageView
-            profileImage.setImageURI(data.getData());
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            // Get the selected image URI
+            Uri selectedImageUri = data.getData();
+
+            // Generate a unique file name for the cropped image
+            String uniqueFileName = "croppedImage_" + System.currentTimeMillis() + ".jpg";
+            Uri destinationUri = Uri.fromFile(new File(getContext().getCacheDir(), uniqueFileName));
+
+            // Start UCrop activity with the selected image URI and destination URI
+            UCrop.of(selectedImageUri, destinationUri)
+                    .withAspectRatio(1, 1)  // Set the aspect ratio as needed
+                    .start(getContext(), this);
+        } else if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+            // Handle the result after cropping
+            final Uri resultUri = UCrop.getOutput(data);
+
+            // Check for null before setting the image
+            if (resultUri != null) {
+                profileImage.setImageURI(resultUri);
+            }
+        } else if (resultCode == UCrop.RESULT_ERROR) {
+            // Handle the error that occurred during cropping (if needed)
+            final Throwable cropError = UCrop.getError(data);
         }
     }
+
 
 
 
