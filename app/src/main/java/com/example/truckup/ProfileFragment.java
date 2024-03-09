@@ -57,9 +57,8 @@ public class ProfileFragment extends Fragment {
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager2 = view.findViewById(R.id.view_pager);
 
-        myViewPagerAdapter = new MyViewPagerAdapter(this);
+        myViewPagerAdapter = new MyViewPagerAdapter(requireActivity());
         viewPager2.setAdapter(myViewPagerAdapter);
-
 
         new TabLayoutMediator(tabLayout, viewPager2, (tab, position) -> {
             switch (position) {
@@ -74,6 +73,24 @@ public class ProfileFragment extends Fragment {
                     break;
             }
         }).attach();
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager2.setCurrentItem(tab.getPosition());
+                // Perform additional actions here
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Handle tab unselected
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // Handle tab reselected
+            }
+        });
 
         ImageButton settingsImageButton = view.findViewById(R.id.settings);
         settingsImageButton.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +152,7 @@ public class ProfileFragment extends Fragment {
             final Throwable cropError = UCrop.getError(data);
         }
     }
+
 
 
 

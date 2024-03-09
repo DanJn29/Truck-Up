@@ -86,6 +86,7 @@
             android:id="@+id/tab_layout"
             app:tabGravity="fill"
             app:tabMode="fixed"
+            app:tabIndicatorFullWidth="false"
             android:background="#FFFFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
