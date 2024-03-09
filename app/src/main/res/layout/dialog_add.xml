@@ -1,0 +1,33 @@
+<!-- dialog_add.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="What would you like to add?"
+        android:textSize="23dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/add_truck_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Truck"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/dark_green" />
+
+    <Button
+        android:id="@+id/add_post_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="Add Post"
+        android:backgroundTint="@color/dark_green" />
+
+</LinearLayout>
