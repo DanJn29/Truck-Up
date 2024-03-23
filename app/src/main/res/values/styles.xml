@@ -8,5 +8,12 @@
     <style name="RadioButtonTheme" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="colorControlActivated">@color/dark_green</item>
     </style>
+    <style name="MyTabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabSelectedTextColor">@color/dark_green</item>
+        <item name="tabTextAppearance">@style/MyTabTextAppearance</item>
+    </style>
+    <style name="MyTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
 
 </resources>

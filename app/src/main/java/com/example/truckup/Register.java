@@ -24,6 +24,8 @@ import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Register extends AppCompatActivity {
 
@@ -154,16 +156,26 @@ public class Register extends AppCompatActivity {
     }
 
     private void sendEmailVerification() {
-        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-        if (user != null) {
-            user.sendEmailVerification()
+        if (firebaseUser != null) {
+            firebaseUser.sendEmailVerification()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                // Email verification sent successfully
-                                // You can handle success here, or it will automatically redirect to login (depending on your app flow)
+                                // Get the username of the current user
+                                String uid = firebaseUser.getUid();
+                                String username = editTextUsername.getText().toString();
+
+                                // Create a User object
+                                User user = new User(username);
+
+                                // Create a DatabaseReference to the Firebase Realtime Database
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+                                // Use the uid as the key and the User object as the value to store in the database
+                                databaseReference.child("users").child(uid).setValue(user);
 
                             } else {
                                 // Failed to send verification email
