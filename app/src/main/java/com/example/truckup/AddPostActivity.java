@@ -75,7 +75,7 @@ public class AddPostActivity extends AppCompatActivity {
 
                 // Create new Post object
                 String postId = databaseReference.child("users").child(userId).child("posts").push().getKey();
-                Post post = new Post(postId, userId, imageUrl, title, description, weight, volume, packageType, packageQuantity, beltQuantity);
+                Post post = new Post(postId, userId, imageUrl, title, description, beltQuantity, packageQuantity, packageType, volume, weight);
                 // Write Post object to Firebase database under the current user's node
                 databaseReference.child("users").child(userId).child("posts").child(postId).setValue(post)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -92,10 +92,10 @@ public class AddPostActivity extends AppCompatActivity {
                         });
 
 
-
                 // Navigate back to MainActivity
                 Intent intent = new Intent(AddPostActivity.this, MainActivity.class);
                 startActivity(intent);
+
 
             }
         });

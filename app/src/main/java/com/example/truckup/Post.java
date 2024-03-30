@@ -7,23 +7,26 @@ public class Post {
     private String imageUrl;
     private String title;
     private String description;
-    private double weight;
-    private double volume;
-    private String packageType;
-    private int packageQuantity;
     private int beltQuantity;
+    private int packageQuantity;
+    private String packageType;
+    private double volume;
+    private double weight;
 
-    public Post(String id,String userId ,String imageUrl, String title, String description, double weight, double volume, String packageType, int packageQuantity, int beltQuantity) {
+    // Default constructor is needed for Firebase
+    public Post() {}
+
+    public Post(String id, String userId, String imageUrl, String title, String description, int beltQuantity, int packageQuantity, String packageType, double volume, double weight) {
         this.id = id;
         this.userId = userId;
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
-        this.weight = weight;
-        this.volume = volume;
-        this.packageType = packageType;
-        this.packageQuantity = packageQuantity;
         this.beltQuantity = beltQuantity;
+        this.packageQuantity = packageQuantity;
+        this.packageType = packageType;
+        this.volume = volume;
+        this.weight = weight;
     }
 
     public String getId() {
@@ -46,23 +49,19 @@ public class Post {
         return description;
     }
 
-    public double getWeight() {
-        return weight;
-    }
-
-    public double getVolume() {
-        return volume;
-    }
-
-    public String getPackageType() {
-        return packageType;
+    public int getBeltQuantity() {
+        return beltQuantity;
     }
 
     public int getPackageQuantity() {
         return packageQuantity;
     }
 
-    public int getBeltQuantity() {
-        return beltQuantity;
+    public String getPackageType() {
+        return packageType;
+    }
+
+    public double getVolume() {
+        return volume;
     }
 }
