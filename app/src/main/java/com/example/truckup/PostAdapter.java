@@ -5,10 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -34,6 +37,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Post post = postList.get(position);
         holder.textViewTitle.setText(post.getTitle());
         holder.textViewDescription.setText(post.getDescription());
+
+        // Download the image from the URL and set it to the ImageView
+        Glide.with(context)
+                .load(post.getImageUrl())
+                .into(holder.imageView5);
     }
 
     @Override
@@ -44,11 +52,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle, textViewDescription;
+        ImageView imageView5;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.post_title);
             textViewDescription = itemView.findViewById(R.id.post_description);
+            imageView5 = itemView.findViewById(R.id.imageView5);
         }
     }
 }

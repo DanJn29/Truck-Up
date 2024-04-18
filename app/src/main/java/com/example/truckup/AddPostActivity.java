@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -30,7 +32,8 @@ import java.io.File;
 
 public class AddPostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
-
+    private StorageReference storageReference;
+    private String imageUrl;
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -42,6 +45,7 @@ public class AddPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_post);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         Spinner spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -62,7 +66,6 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Get data from input fields
-                String imageUrl = selectImage.getDrawable().toString(); // Replace this with actual image URL if you have one
                 String title = ((EditText) findViewById(R.id.post_title)).getText().toString();
                 String description = ((EditText) findViewById(R.id.post_description)).getText().toString();
                 double weight = Double.parseDouble(((EditText) findViewById(R.id.cargo_weight)).getText().toString());
@@ -82,25 +85,24 @@ public class AddPostActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(AddPostActivity.this, "Post added", Toast.LENGTH_SHORT).show();
+                                Log.d("AddPostActivity", "Post added successfully"); // Log success
+
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(AddPostActivity.this, "Failed to add post", Toast.LENGTH_SHORT).show();
+                                Log.e("AddPostActivity", "Failed to add post", e); // Log failure
+
                             }
                         });
-
 
                 // Navigate back to MainActivity
                 Intent intent = new Intent(AddPostActivity.this, MainActivity.class);
                 startActivity(intent);
-
-
             }
         });
-
-
     }
 
     public void onImageButtonClick(View view) {
@@ -137,21 +139,15 @@ public class AddPostActivity extends AppCompatActivity {
             // Check for null before setting the image
             if (resultUri != null) {
                 selectImage.setImageURI(resultUri);
-                // Get an instance of FirebaseStorage
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-
-// Create a storage reference
-                StorageReference storageRef = storage.getReference();
-
-// Create a reference to 'images/{filename}'
+                // Create a reference to 'images/{filename}'
                 Uri selectedImageUri = resultUri;
                 String filename = selectedImageUri.getLastPathSegment();
-                StorageReference imageRef = storageRef.child("images/" + filename);
+                StorageReference imageRef = storageReference.child("images/" + filename);
 
-// Upload the file to the path "images/{filename}"
+                // Upload the file to the path "images/{filename}"
                 UploadTask uploadTask = imageRef.putFile(selectedImageUri);
 
-// Register observers to listen for when the download is done or if it fails
+                // Register observers to listen for when the download is done or if it fails
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
@@ -167,6 +163,7 @@ public class AddPostActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri downloadUri) {
                                 // Now you can use downloadUri.toString() as the imageUrl for your Post
+                                imageUrl = downloadUri.toString();
                                 Toast.makeText(AddPostActivity.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
                             }
                         });

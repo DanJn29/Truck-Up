@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -65,6 +66,7 @@ public class HomeFragment extends Fragment {
                                     Log.e("HomeFragment", "Error parsing post", e);
                                 }
                             }
+                            Collections.reverse(postList); // Reverse the list
                             postAdapter.notifyDataSetChanged();
                             Log.d("HomeFragment", "Number of posts: " + postList.size());
                         }
