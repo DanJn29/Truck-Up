@@ -16,6 +16,9 @@
         android:theme="@style/Theme.TruckUp"
         tools:targetApi="31">
         <activity
+            android:name=".DescriptionActivity"
+            android:exported="false" />
+        <activity
             android:name=".PostDetailActivity"
             android:exported="false" />
         <activity

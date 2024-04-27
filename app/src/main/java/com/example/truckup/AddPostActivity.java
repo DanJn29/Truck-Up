@@ -73,12 +73,12 @@ public class AddPostActivity extends AppCompatActivity {
                 String packageType = ((Spinner) findViewById(R.id.spinner)).getSelectedItem().toString();
                 int packageQuantity = Integer.parseInt(((EditText) findViewById(R.id.package_quantity)).getText().toString());
                 int beltQuantity = Integer.parseInt(((EditText) findViewById(R.id.belt_quantity)).getText().toString());
-
                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                 // Create new Post object
                 String postId = databaseReference.child("users").child(userId).child("posts").push().getKey();
                 Post post = new Post(postId, userId, imageUrl, title, description, beltQuantity, packageQuantity, packageType, volume, weight);
+
                 // Write Post object to Firebase database under the current user's node
                 databaseReference.child("users").child(userId).child("posts").child(postId).setValue(post)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {

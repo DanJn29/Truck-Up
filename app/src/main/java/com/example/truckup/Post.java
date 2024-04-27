@@ -1,6 +1,10 @@
 package com.example.truckup;
 
-public class Post {
+import java.io.Serializable;
+
+public class Post implements Serializable {
+
+    private String username;
 
     private String id;
     private String userId;
@@ -27,6 +31,12 @@ public class Post {
         this.packageType = packageType;
         this.volume = volume;
         this.weight = weight;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getId() {
@@ -63,5 +73,8 @@ public class Post {
 
     public double getVolume() {
         return volume;
+    }
+    public double getWeight() {
+        return weight;
     }
 }
