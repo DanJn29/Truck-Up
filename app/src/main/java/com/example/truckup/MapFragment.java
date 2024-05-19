@@ -32,12 +32,16 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class MapFragment extends Fragment {
 
     private MapView map = null;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
+    private Marker startMarker;
+    private MyLocationNewOverlay myLocationOverlay;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
 
     @Override
@@ -58,7 +62,8 @@ public class MapFragment extends Fragment {
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {
-                    onLocationChanged(location);
+                    addServiceStationMarkers(location);
+
                 }
             }
         };
@@ -68,6 +73,24 @@ public class MapFragment extends Fragment {
         } else {
             startLocationUpdates();
         }
+
+        // Create the MyLocationNewOverlay and add it to the map
+        myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getActivity()), map);
+        myLocationOverlay.enableMyLocation();
+        map.getOverlays().add(myLocationOverlay); // Add the overlay to the map
+
+        myLocationOverlay.runOnFirstFix(new Runnable() {
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        map.getController().animateTo(myLocationOverlay.getMyLocation());
+                        map.getController().setZoom(16.0);
+                    }
+                });
+            }
+        });
+
 
         return view;
     }
@@ -98,23 +121,6 @@ public class MapFragment extends Fragment {
         }
     }
 
-    public void onLocationChanged(Location location) {
-        GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-        map.getController().setCenter(startPoint);
-        map.getController().zoomTo(18.0);
-
-        Marker startMarker = new Marker(map);
-        startMarker.setPosition(startPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        startMarker.setTitle("My location");
-        startMarker.setIcon(getResources().getDrawable(R.drawable.location));
-        map.getOverlays().add(startMarker);
-
-        // After adding the marker, re-center the map to the marker's position and zoom in
-        map.getController().animateTo(startMarker.getPosition());
-        map.getController().zoomTo(18.0);
-        addServiceStationMarkers(location);
-    }
     private void addServiceStationMarkers(Location location) {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
@@ -172,15 +178,13 @@ public class MapFragment extends Fragment {
     public void onResume() {
         super.onResume();
         map.onResume();
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startLocationUpdates();
-        }
+        myLocationOverlay.enableMyLocation();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         map.onPause();
-        fusedLocationClient.removeLocationUpdates(locationCallback);
+        myLocationOverlay.disableMyLocation();
     }
 }
