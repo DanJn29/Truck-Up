@@ -2,10 +2,10 @@ package com.example.truckup;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -41,6 +44,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.textViewDescription.setText(post.getDescription());
         holder.userName.setText(post.getUsername());
         holder.weight.setText(String.valueOf(post.getWeight()));
+        holder.KgOrTonnes.setText(post.getUnit());
+        holder.Date.setText(post.getDate());
+        holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Change the icon of the ImageButton when it is clicked
+                holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_24); // Replace with the name of your new icon
+
+                // Get the post
+                Post post = postList.get(holder.getAdapterPosition());
+
+                // Get the current user's ID
+                String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                // Add the post to the current user's liked posts node
+                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("likedPosts").child(currentUserId);
+                dbRef.child(post.getId()).setValue(post);
+            }
+        });
 
 
 
@@ -66,8 +88,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTitle, textViewDescription, userName,weight,KgOrTonnes;
+        TextView textViewTitle, textViewDescription, userName,weight,KgOrTonnes,Date;
         ImageView imageView5;
+        ImageButton favoriteButton;
         MaterialCardView cardView;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -79,6 +102,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             userName = itemView.findViewById(R.id.username);
             weight = itemView.findViewById(R.id.cargo_weight);
             KgOrTonnes = itemView.findViewById(R.id.kg_or_tonnes);
+            Date = itemView.findViewById(R.id.date);
+            favoriteButton = itemView.findViewById(R.id.favorite);
         }
     }
 }

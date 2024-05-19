@@ -3,8 +3,8 @@
 
     <item
         android:id="@+id/home"
-        android:icon="@drawable/baseline_home_24"
-        android:title="home" />
+        android:icon="@drawable/noun_box_1276338"
+        android:title="cargo" />
 
     <item
         android:id="@+id/trucks"

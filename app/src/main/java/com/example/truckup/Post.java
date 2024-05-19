@@ -16,6 +16,9 @@ public class Post implements Serializable {
     private String packageType;
     private double volume;
     private double weight;
+    private String unit;
+    private String date;
+    private boolean isFavorite;
 
     // Default constructor is needed for Firebase
     public Post() {}
@@ -42,39 +45,89 @@ public class Post implements Serializable {
     public String getId() {
         return id;
     }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUserId() {
         return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getImageUrl() {
         return imageUrl;
     }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public String getTitle() {
         return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
         return description;
     }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public int getBeltQuantity() {
         return beltQuantity;
+    }
+    public void setBeltQuantity(int beltQuantity) {
+        this.beltQuantity = beltQuantity;
     }
 
     public int getPackageQuantity() {
         return packageQuantity;
     }
+    public void setPackageQuantity(int packageQuantity) {
+        this.packageQuantity = packageQuantity;
+    }
 
     public String getPackageType() {
         return packageType;
+    }
+    public void setPackageType(String packageType) {
+        this.packageType = packageType;
     }
 
     public double getVolume() {
         return volume;
     }
+    public void setVolume(double volume) {
+        this.volume = volume;
+    }
     public double getWeight() {
         return weight;
     }
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+    public String getUnit() {
+        return unit;
+    }
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
+    }
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+
 }

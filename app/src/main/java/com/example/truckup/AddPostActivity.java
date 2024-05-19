@@ -1,9 +1,7 @@
 package com.example.truckup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,15 +10,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -29,11 +35,14 @@ import com.google.firebase.storage.UploadTask;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class AddPostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private String imageUrl;
+    private TextView loadingDateTextView;
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -61,6 +70,39 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
+        loadingDateTextView = findViewById(R.id.textView2);
+        loadingDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddPostActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                Calendar selectedDate = Calendar.getInstance();
+                                selectedDate.set(year, month, dayOfMonth);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                String dateString = sdf.format(selectedDate.getTime());
+
+                                loadingDateTextView.setText(dateString);
+                            }
+                        }, year, month, day);
+
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                datePickerDialog.show();
+
+                // Change the colors of the "OK" and "Cancel" buttons
+                datePickerDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(AddPostActivity.this, R.color.dark_green)); // Change this to your desired color
+                datePickerDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(AddPostActivity.this, R.color.dark_green)); // Change this to your desired color
+            }
+        });
+
+
         Button postButton = findViewById(R.id.post_button);
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,10 +116,28 @@ public class AddPostActivity extends AppCompatActivity {
                 int packageQuantity = Integer.parseInt(((EditText) findViewById(R.id.package_quantity)).getText().toString());
                 int beltQuantity = Integer.parseInt(((EditText) findViewById(R.id.belt_quantity)).getText().toString());
                 String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                RadioGroup unitRadioGroup = findViewById(R.id.radioGroup); // Assuming you have a RadioGroup for selecting the unit
+                int selectedUnitId = unitRadioGroup.getCheckedRadioButtonId();
+                RadioButton selectedRadioButton = findViewById(selectedUnitId);
+                String selectedUnit = selectedRadioButton.getText().toString();
+
+
 
                 // Create new Post object
                 String postId = databaseReference.child("users").child(userId).child("posts").push().getKey();
-                Post post = new Post(postId, userId, imageUrl, title, description, beltQuantity, packageQuantity, packageType, volume, weight);
+                Post post = new Post();
+                post.setId(postId);
+                post.setUserId(userId);
+                post.setImageUrl(imageUrl);
+                post.setTitle(title);
+                post.setDescription(description);
+                post.setBeltQuantity(beltQuantity);
+                post.setPackageQuantity(packageQuantity);
+                post.setPackageType(packageType);
+                post.setVolume(volume);
+                post.setWeight(weight);
+                post.setUnit(selectedUnit);
+                post.setDate(loadingDateTextView.getText().toString());
 
                 // Write Post object to Firebase database under the current user's node
                 databaseReference.child("users").child(userId).child("posts").child(postId).setValue(post)
