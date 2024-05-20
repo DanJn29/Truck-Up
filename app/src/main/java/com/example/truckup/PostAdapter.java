@@ -46,21 +46,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.weight.setText(String.valueOf(post.getWeight()));
         holder.KgOrTonnes.setText(post.getUnit());
         holder.Date.setText(post.getDate());
+
         holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Change the icon of the ImageButton when it is clicked
-                holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_24); // Replace with the name of your new icon
-
                 // Get the post
                 Post post = postList.get(holder.getAdapterPosition());
+
+                // Update the isFavorite field of the post
+                post.setFavorite(!post.isFavorite());
+
+                // Change the icon of the ImageButton based on the new value of isFavorite
+                if (post.isFavorite()) {
+                    holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_24); // Replace with the name of your filled heart icon
+                } else {
+                    holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_border_24); // Replace with the name of your empty heart icon
+                }
 
                 // Get the current user's ID
                 String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                // Add the post to the current user's liked posts node
+                // Add or remove the post from the current user's liked posts node based on the new value of isFavorite
                 DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("likedPosts").child(currentUserId);
-                dbRef.child(post.getId()).setValue(post);
+                if (post.isFavorite()) {
+                    dbRef.child(post.getId()).setValue(post);
+                } else {
+                    dbRef.child(post.getId()).removeValue();
+                }
             }
         });
 

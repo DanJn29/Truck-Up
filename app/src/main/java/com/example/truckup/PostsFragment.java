@@ -46,18 +46,39 @@ public class PostsFragment extends Fragment {
         String currentUserId = currentUser != null ? currentUser.getUid() : null;
 
         if (currentUserId != null) {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("posts");
+            DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("posts");
+            DatabaseReference likedPostsRef = FirebaseDatabase.getInstance().getReference("likedPosts").child(currentUserId);
 
-            databaseReference.addValueEventListener(new ValueEventListener() {
+            postsRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     postList.clear();
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         Post post = postSnapshot.getValue(Post.class);
-                        postList.add(post);
+                        if (post != null) {
+                            // Check if the post is in the likedPosts node of the current user
+                            likedPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.hasChild(post.getId())) {
+                                        // If the post is in the likedPosts node of the current user, set isFavorite to true
+                                        post.setFavorite(true);
+                                    } else {
+                                        // If the post is not in the likedPosts node of the current user, set isFavorite to false
+                                        post.setFavorite(false);
+                                    }
+                                    postList.add(post);
+                                    Collections.reverse(postList); // Reverse the list
+                                    postAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    // Handle possible errors.
+                                }
+                            });
+                        }
                     }
-                    Collections.reverse(postList); // Reverse the list
-                    postAdapter.notifyDataSetChanged();
                 }
 
                 @Override

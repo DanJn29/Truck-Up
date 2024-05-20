@@ -1,7 +1,6 @@
 package com.example.truckup;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,7 +20,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -42,39 +41,101 @@ public class HomeFragment extends Fragment {
         postAdapter = new PostAdapter(getContext(), postList);
         recyclerView.setAdapter(postAdapter);
 
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference usersRef = rootRef.child("users");
+        // Get the current user's ID
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+// Get a reference to the likedPosts node of the current user
+        DatabaseReference likedPostsRef = FirebaseDatabase.getInstance().getReference("likedPosts").child(currentUserId);
+
+// Get a reference to the posts node
+        DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("posts");
+
+// Listen for changes in the posts node
+        postsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postList.clear();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Post post = postSnapshot.getValue(Post.class);
+                    if (post != null) {
+                        // Check if the post is in the likedPosts node of the current user
+                        likedPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.hasChild(post.getId())) {
+                                    // If the post is in the likedPosts node of the current user, set isFavorite to true
+                                    post.setFavorite(true);
+                                } else {
+                                    // If the post is not in the likedPosts node of the current user, set isFavorite to false
+                                    post.setFavorite(false);
+                                }
+                                postList.add(post);
+                                Collections.reverse(postList); // Reverse the list
+                                postAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // Handle possible errors.
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors.
+            }
+        });
+
+        // Get a reference to the users node
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+
+// Listen for changes in the users node
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postList.clear();
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    DatabaseReference userPostsRef = usersRef.child(userSnapshot.getKey()).child("posts");
-                    userPostsRef.addValueEventListener(new ValueEventListener() {
+                    // Get a reference to the posts node of the current user
+                    DatabaseReference postsRef = usersRef.child(userSnapshot.getKey()).child("posts");
+
+                    // Listen for changes in the posts node of the current user
+                    postsRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                                try {
-                                    Post post = postSnapshot.getValue(Post.class);
-                                    if (post != null) {
-                                        Log.d("HomeFragment", "Post: " + post.toString());
-                                        postList.add(post);
-                                    } else {
-                                        Log.d("HomeFragment", "Failed to parse post: " + postSnapshot.toString());
-                                    }
-                                } catch (Exception e) {
-                                    Log.e("HomeFragment", "Error parsing post", e);
+                                Post post = postSnapshot.getValue(Post.class);
+                                if (post != null) {
+                                    // Check if the post is in the likedPosts node of the current user
+                                    likedPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.hasChild(post.getId())) {
+                                                // If the post is in the likedPosts node of the current user, set isFavorite to true
+                                                post.setFavorite(true);
+                                            } else {
+                                                // If the post is not in the likedPosts node of the current user, set isFavorite to false
+                                                post.setFavorite(false);
+                                            }
+                                            postList.add(post);
+                                            Collections.reverse(postList); // Reverse the list
+                                            postAdapter.notifyDataSetChanged();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            // Handle possible errors.
+                                        }
+                                    });
                                 }
                             }
-                            Collections.reverse(postList); // Reverse the list
-                            postAdapter.notifyDataSetChanged();
-                            Log.d("HomeFragment", "Number of posts: " + postList.size());
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Log the error
-                            Log.d("HomeFragment", "Failed to read posts: ", databaseError.toException());
+                            // Handle possible errors.
                         }
                     });
                 }
@@ -82,8 +143,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Log the error
-                Log.d("HomeFragment", "Failed to read users: ", databaseError.toException());
+                // Handle possible errors.
             }
         });
 

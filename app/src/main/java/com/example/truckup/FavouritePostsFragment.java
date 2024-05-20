@@ -44,14 +44,24 @@ public class FavouritePostsFragment extends Fragment {
         // Get the current user's ID
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // Get the current user's liked posts
+        // Get a reference to the likedPosts node of the current user
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("likedPosts").child(currentUserId);
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        // Listen for changes in the likedPosts node of the current user
+        dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Post> posts = new ArrayList<>();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Post post = postSnapshot.getValue(Post.class);
+                    // Check if the post is in the likedPosts node of the current user
+                    if (dataSnapshot.hasChild(post.getId())) {
+                        // If the post is in the likedPosts node of the current user, set isFavorite to true
+                        post.setFavorite(true);
+                    } else {
+                        // If the post is not in the likedPosts node of the current user, set isFavorite to false
+                        post.setFavorite(false);
+                    }
                     posts.add(post);
                 }
 

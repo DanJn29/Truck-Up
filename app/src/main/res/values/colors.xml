@@ -10,5 +10,6 @@
     <color name="primary_container">#DFF9FC</color>
     <color name="secondary_container">#DFF9FC</color>
     <color name="gray1">#858C85</color>
+    <color name="red1">#FF0000</color>
 
 </resources>
