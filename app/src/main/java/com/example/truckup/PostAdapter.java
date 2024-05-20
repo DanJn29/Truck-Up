@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -47,6 +50,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.KgOrTonnes.setText(post.getUnit());
         holder.Date.setText(post.getDate());
 
+
+        // Get the current user's ID
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Get a reference to the likedPosts node of the current user
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("likedPosts");
+
+        // Check if the post is in the likedPosts node of the current user
+        dbRef.child(post.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // If the post is in the likedPosts node of the current user, set the image of the favoriteButton to the filled heart icon
+                    holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_24); // Replace with the name of your filled heart icon
+                } else {
+                    // If the post is not in the likedPosts node of the current user, set the image of the favoriteButton to the empty heart icon
+                    holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_border_24); // Replace with the name of your empty heart icon
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle possible errors.
+            }
+        });
+
         holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +96,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                 // Add or remove the post from the current user's liked posts node based on the new value of isFavorite
-                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("likedPosts").child(currentUserId);
+                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("likedPosts");
                 if (post.isFavorite()) {
                     dbRef.child(post.getId()).setValue(post);
                 } else {
@@ -75,7 +104,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 }
             }
         });
-
 
 
         // Download the image from the URL and set it to the ImageView
