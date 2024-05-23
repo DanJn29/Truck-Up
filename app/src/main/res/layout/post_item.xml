@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="160dp"
     android:id="@+id/card_view"
     android:layout_marginTop="20dp"
     android:layout_marginEnd="20dp"
@@ -19,24 +19,31 @@
 
         <TextView
             android:id="@+id/post_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="40dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Title"
             android:textSize="20sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/favorite"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/imageView5"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/post_description"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Description"
             android:textSize="15sp"
+            app:layout_constraintEnd_toStartOf="@+id/favorite"
             app:layout_constraintStart_toEndOf="@+id/imageView5"
             app:layout_constraintTop_toBottomOf="@+id/post_title" />
 
@@ -44,8 +51,8 @@
             android:id="@+id/cargo_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
             android:text="Cargo Weight"
             app:layout_constraintStart_toStartOf="@+id/imageView4"
             app:layout_constraintTop_toBottomOf="@+id/post_description" />
@@ -54,18 +61,17 @@
             android:id="@+id/kg_or_tonnes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="8dp"
             android:text="kg/tonnes"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.142"
+            app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toEndOf="@+id/cargo_weight"
             app:layout_constraintTop_toBottomOf="@+id/post_description" />
 
         <ImageView
             android:id="@+id/imageView4"
-            android:layout_width="34dp"
-            android:layout_height="28dp"
+            android:layout_width="25dp"
+            android:layout_height="19dp"
             android:layout_marginStart="160dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/baseline_scale_24"
@@ -76,10 +82,10 @@
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="4dp"
             android:text="Date"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/arrow"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -92,14 +98,34 @@
             app:layout_constraintEnd_toStartOf="@+id/date"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/baseline_arrow_forward_24"
+            app:layout_constraintEnd_toStartOf="@+id/unloading_date"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/unloading_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="10dp"
+            android:text="Date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageButton
             android:id="@+id/favorite"
             android:layout_width="38dp"
             android:layout_height="37dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/baseline_favorite_border_24"
             android:background="@android:color/transparent"
+            android:src="@drawable/baseline_favorite_border_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/date" />
 

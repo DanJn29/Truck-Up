@@ -1,8 +1,13 @@
 package com.example.truckup;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,6 +26,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +40,15 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.yalantis.ucrop.UCrop;
 
+import org.osmdroid.events.MapEventsReceiver;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MapEventsOverlay;
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,7 +57,7 @@ public class AddPostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
     private String imageUrl;
-    private TextView loadingDateTextView;
+    private TextView loadingDateTextView, unLoadingDateTextView, loadingLocationTextView, unLoadingLocationTextView;
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -102,6 +117,95 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
+        unLoadingDateTextView = findViewById(R.id.unloading_date);
+        unLoadingDateTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddPostActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                Calendar selectedDate = Calendar.getInstance();
+                                selectedDate.set(year, month, dayOfMonth);
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                String dateString = sdf.format(selectedDate.getTime());
+
+                                unLoadingDateTextView.setText(dateString);
+                            }
+                        }, year, month, day);
+
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                datePickerDialog.show();
+
+                // Change the colors of the "OK" and "Cancel" buttons
+                datePickerDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(AddPostActivity.this, R.color.dark_green)); // Change this to your desired color
+                datePickerDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(AddPostActivity.this, R.color.dark_green)); // Change this to your desired color
+            }
+        });
+        loadingLocationTextView = findViewById(R.id.pick_up_location);
+
+        loadingLocationTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(AddPostActivity.this);
+                dialog.setContentView(R.layout.dialog_map);
+
+                MapView map = dialog.findViewById(R.id.map);
+                map.setTileSource(TileSourceFactory.MAPNIK);
+
+                // Enable zoom controls and multi-touch controls
+                map.setBuiltInZoomControls(true);
+                map.setMultiTouchControls(true);
+
+                MapController mapController = (MapController) map.getController();
+                mapController.setZoom(9.5);
+
+                // Check if the location permissions have been granted
+                if (ActivityCompat.checkSelfPermission(AddPostActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(AddPostActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    // Get the device's current location
+                    LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                    if (location != null) {
+                        // Set the map's center to the device's current location
+                        GeoPoint currentLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        mapController.setCenter(currentLocation);
+                    }
+
+                    // Add a marker at the device's current location
+                    MyLocationNewOverlay myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(AddPostActivity.this), map);
+                    myLocationOverlay.enableMyLocation();
+                    map.getOverlays().add(myLocationOverlay);
+                }
+
+                MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
+                    @Override
+                    public boolean singleTapConfirmedHelper(GeoPoint p) {
+                        loadingLocationTextView.setText(p.getLatitude() + ", " + p.getLongitude());
+                        dialog.dismiss();
+                        return true;
+                    }
+
+                    @Override
+                    public boolean longPressHelper(GeoPoint p) {
+                        return false;
+                    }
+                };
+
+                map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
+
+                dialog.show();
+            }
+        });
+
+
 
         Button postButton = findViewById(R.id.post_button);
         postButton.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +242,7 @@ public class AddPostActivity extends AppCompatActivity {
                 post.setWeight(weight);
                 post.setUnit(selectedUnit);
                 post.setDate(loadingDateTextView.getText().toString());
+                post.setUnloadingDate(unLoadingDateTextView.getText().toString());
 
                 // Write Post object to Firebase database under the current user's node
                 databaseReference.child("users").child(userId).child("posts").child(postId).setValue(post)

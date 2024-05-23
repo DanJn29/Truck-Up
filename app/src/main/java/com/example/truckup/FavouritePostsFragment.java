@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FavouritePostsFragment extends Fragment {
@@ -61,6 +62,7 @@ public class FavouritePostsFragment extends Fragment {
                 }
 
                 // Update your RecyclerView with the posts
+                Collections.reverse(posts);
                 postAdapter = new PostAdapter(getContext(), posts);
                 recyclerView.setAdapter(postAdapter);
             }

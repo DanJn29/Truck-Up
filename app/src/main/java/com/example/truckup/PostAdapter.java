@@ -31,6 +31,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public PostAdapter(Context context, List<Post> postList) {
         this.context = context;
         this.postList = postList;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -49,6 +50,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.weight.setText(String.valueOf(post.getWeight()));
         holder.KgOrTonnes.setText(post.getUnit());
         holder.Date.setText(post.getDate());
+        holder.UnLoadingDate.setText(post.getUnloadingDate());
 
 
         // Get the current user's ID
@@ -82,29 +84,54 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 // Get the post
                 Post post = postList.get(holder.getAdapterPosition());
 
-                // Update the isFavorite field of the post
-                post.setFavorite(!post.isFavorite());
-
-                // Change the icon of the ImageButton based on the new value of isFavorite
-                if (post.isFavorite()) {
-                    holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_24); // Replace with the name of your filled heart icon
-                } else {
-                    holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_border_24); // Replace with the name of your empty heart icon
-                }
-
                 // Get the current user's ID
                 String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                // Add or remove the post from the current user's liked posts node based on the new value of isFavorite
+                // Get a reference to the likedPosts node of the current user
                 DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("likedPosts");
-                if (post.isFavorite()) {
-                    dbRef.child(post.getId()).setValue(post);
-                } else {
-                    dbRef.child(post.getId()).removeValue();
-                }
+
+                // Check if the post is in the likedPosts node of the current user
+                dbRef.child(post.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            // If the post is in the likedPosts node of the current user, unlike it
+                            // Remove the post from the current user's liked posts node
+                            dbRef.child(post.getId()).removeValue().addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    post.setFavorite(false);
+
+                                    // Change the icon of the ImageButton to the empty heart icon
+                                    holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_border_24); // Replace with the name of your empty heart icon
+
+                                    // Notify the adapter that the item at this position has been changed
+                                    notifyItemChanged(holder.getAdapterPosition());
+                                }
+                            });
+                        } else {
+                            // If the post is not in the likedPosts node of the current user, like it
+                            // Add the post to the current user's liked posts node
+                            dbRef.child(post.getId()).setValue(post).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    post.setFavorite(true);
+
+                                    // Change the icon of the ImageButton to the filled heart icon
+                                    holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_24); // Replace with the name of your filled heart icon
+
+                                    // Notify the adapter that the item at this position has been changed
+                                    notifyItemChanged(holder.getAdapterPosition());
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Handle possible errors.
+                    }
+                });
             }
         });
-
 
         // Download the image from the URL and set it to the ImageView
         Glide.with(context)
@@ -126,9 +153,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         int itemCount = postList.size();
         return itemCount;
     }
+    @Override
+    public long getItemId(int position) {
+        // Assuming that getId() returns a unique ID for each post
+        return postList.get(position).getId().hashCode();
+    }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTitle, textViewDescription, userName,weight,KgOrTonnes,Date;
+        TextView textViewTitle, textViewDescription, userName,weight,KgOrTonnes,Date,UnLoadingDate;
         ImageView imageView5;
         ImageButton favoriteButton;
         MaterialCardView cardView;
@@ -144,6 +176,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             KgOrTonnes = itemView.findViewById(R.id.kg_or_tonnes);
             Date = itemView.findViewById(R.id.date);
             favoriteButton = itemView.findViewById(R.id.favorite);
+            UnLoadingDate = itemView.findViewById(R.id.unloading_date);
         }
     }
 }

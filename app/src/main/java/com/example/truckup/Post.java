@@ -19,6 +19,9 @@ public class Post implements Serializable {
     private String unit;
     private String date;
     private boolean isFavorite;
+    private String unloadingDate;
+    private String loadingLocation;
+    private String unloadingLocation;
 
     // Default constructor is needed for Firebase
     public Post() {}
@@ -127,6 +130,24 @@ public class Post implements Serializable {
     }
     public void setFavorite(boolean favorite) {
         isFavorite = favorite;
+    }
+    public String getUnloadingDate() {
+        return unloadingDate;
+    }
+    public void setUnloadingDate(String unloadingDate) {
+        this.unloadingDate = unloadingDate;
+    }
+    public String getLoadingLocation() {
+        return loadingLocation;
+    }
+    public void setLoadingLocation(String loadingLocation) {
+        this.loadingLocation = loadingLocation;
+    }
+    public String getUnloadingLocation() {
+        return unloadingLocation;
+    }
+    public void setUnloadingLocation(String unloadingLocation) {
+        this.unloadingLocation = unloadingLocation;
     }
 
 

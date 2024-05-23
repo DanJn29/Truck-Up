@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HomeFragment extends Fragment {
 
@@ -54,12 +55,15 @@ public class HomeFragment extends Fragment {
                     postsRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            ArrayList<Post> tempList = new ArrayList<>();
                             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                                 Post post = postSnapshot.getValue(Post.class);
                                 if (post != null) {
-                                    postList.add(post);
+                                    tempList.add(post);
                                 }
                             }
+                            Collections.reverse(tempList);
+                            postList.addAll(tempList);
                             postAdapter.notifyDataSetChanged();
                         }
 
