@@ -24,45 +24,45 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class TruckAdapter extends RecyclerView.Adapter<TruckAdapter.TruckViewHolder> {
 
     private Context context;
-    private List<Post> postList;
+    private List<Truck> truckList;
 
-    public PostAdapter(Context context, List<Post> postList) {
+    public TruckAdapter(Context context, List<Truck> truckList) {
         this.context = context;
-        this.postList = postList;
+        this.truckList = truckList;
         setHasStableIds(true);
     }
 
     @NonNull
     @Override
-    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.post_item, parent, false);
-        return new PostViewHolder(view);
+    public TruckViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.truck_item, parent, false);
+        return new TruckViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        Post post = postList.get(position);
-        holder.textViewTitle.setText(post.getTitle());
-        holder.textViewDescription.setText(post.getDescription());
-        holder.userName.setText(post.getUsername());
-        holder.weight.setText(String.valueOf(post.getWeight()));
-        holder.KgOrTonnes.setText(post.getUnit());
-        holder.Date.setText(post.getDate());
-        holder.UnLoadingDate.setText(post.getUnloadingDate());
-        holder.price.setText(post.getPrice());
+    public void onBindViewHolder(@NonNull TruckViewHolder holder, int position) {
+        Truck truck = truckList.get(position);
+        holder.textViewTitle.setText(truck.getTitle());
+        holder.textViewDescription.setText(truck.getDescription());
+        holder.userName.setText(truck.getUsername());
+        holder.weight.setText(String.valueOf(truck.getWeight()));
+        holder.KgOrTonnes.setText(truck.getUnit());
+        holder.Date.setText(truck.getDate());
+        holder.UnLoadingDate.setText(truck.getUnloadingDate());
+        holder.price.setText(truck.getPrice());
 
 
         // Get the current user's ID
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // Get a reference to the likedPosts node of the current user
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("likedPosts");
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("likedTrucks");
 
         // Check if the post is in the likedPosts node of the current user
-        dbRef.child(post.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+        dbRef.child(truck.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -84,24 +84,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             @Override
             public void onClick(View v) {
                 // Get the post
-                Post post = postList.get(holder.getAdapterPosition());
+                Truck truck = truckList.get(holder.getAdapterPosition());
 
                 // Get the current user's ID
                 String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                 // Get a reference to the likedPosts node of the current user
-                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("likedPosts");
+                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("likedTrucks");
 
                 // Check if the post is in the likedPosts node of the current user
-                dbRef.child(post.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                dbRef.child(truck.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             // If the post is in the likedPosts node of the current user, unlike it
                             // Remove the post from the current user's liked posts node
-                            dbRef.child(post.getId()).removeValue().addOnCompleteListener(task -> {
+                            dbRef.child(truck.getId()).removeValue().addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-                                    post.setFavorite(false);
+                                    truck.setFavorite(false);
 
                                     // Change the icon of the ImageButton to the empty heart icon
                                     holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_border_24); // Replace with the name of your empty heart icon
@@ -113,9 +113,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         } else {
                             // If the post is not in the likedPosts node of the current user, like it
                             // Add the post to the current user's liked posts node
-                            dbRef.child(post.getId()).setValue(post).addOnCompleteListener(task -> {
+                            dbRef.child(truck.getId()).setValue(truck).addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-                                    post.setFavorite(true);
+                                    truck.setFavorite(true);
 
                                     // Change the icon of the ImageButton to the filled heart icon
                                     holder.favoriteButton.setImageResource(R.drawable.baseline_favorite_24); // Replace with the name of your filled heart icon
@@ -135,14 +135,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
-        String loadingLocationAddress = post.getLoadingLocationAddress(context);
+
+        String loadingLocationAddress = truck.getLoadingLocationAddress(context);
         if (loadingLocationAddress != null) {
             holder.loadingLocationn.setText(loadingLocationAddress.substring(0, loadingLocationAddress.length() / 2));
         } else {
             holder.loadingLocationn.setText("Loading Location not set");
         }
 
-        String unloadingLocationAddress = post.getUnLoadingLocationAddress(context);
+        String unloadingLocationAddress = truck.getUnLoadingLocationAddress(context);
         if(unloadingLocationAddress != null) {
             holder.unloadingLocationn.setText(unloadingLocationAddress.substring(0, unloadingLocationAddress.length() / 2));
         } else {
@@ -151,14 +152,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // Download the image from the URL and set it to the ImageView
         Glide.with(context)
-                .load(post.getImageUrl())
+                .load(truck.getImageUrl())
                 .into(holder.imageView5);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), DescriptionActivity.class);
-                intent.putExtra("post", post); // Make sure Post class implements Serializable or Parcelable
+                Intent intent = new Intent(v.getContext(), TruckDescription.class);
+                intent.putExtra("truck", truck);
                 v.getContext().startActivity(intent);
             }
         });
@@ -166,22 +167,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public int getItemCount() {
-        int itemCount = postList.size();
+        int itemCount = truckList.size();
         return itemCount;
     }
     @Override
     public long getItemId(int position) {
         // Assuming that getId() returns a unique ID for each post
-        return postList.get(position).getId().hashCode();
+        return truckList.get(position).getId().hashCode();
     }
 
-    public class PostViewHolder extends RecyclerView.ViewHolder {
+    public class TruckViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle, textViewDescription, userName,weight,KgOrTonnes,Date,UnLoadingDate,loadingLocationn,unloadingLocationn,price;
         ImageView imageView5;
         ImageButton favoriteButton;
         MaterialCardView cardView;
 
-        public PostViewHolder(@NonNull View itemView) {
+        public TruckViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.post_title);
             textViewDescription = itemView.findViewById(R.id.post_description);

@@ -26,13 +26,13 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
-public class DescriptionActivity extends AppCompatActivity {
+public class TruckDescription extends AppCompatActivity {
     private MapView map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_description);
+        setContentView(R.layout.activity_truck_description);
 
         Configuration.getInstance().setUserAgentValue(getPackageName());
 
@@ -41,13 +41,13 @@ public class DescriptionActivity extends AppCompatActivity {
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
 
-        Post post = (Post) getIntent().getSerializableExtra("post");
+        Truck truck = (Truck) getIntent().getSerializableExtra("truck");
 
         // Get a reference to the database
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        String loadingLocation = post.getLoadingLocation();
-        String unloadingLocation = post.getUnloadingLocation();
+        String loadingLocation = truck.getLoadingLocation();
+        String unloadingLocation = truck.getUnloadingLocation();
 
 
         // Split the locations into latitude and longitude
@@ -87,54 +87,45 @@ public class DescriptionActivity extends AppCompatActivity {
         map.getController().setZoom(10.0);
         map.getController().setCenter(loadingPoint);
 
-        map.invalidate(); // Refresh the map
-
-
 
         // Find your views
-         TextView textViewTitle = findViewById(R.id.title);
-         TextView textViewDescription = findViewById(R.id.description);
-         ImageView imageView = findViewById(R.id.imageView);
-         TextView loadingDate = findViewById(R.id.loading_date);
-         TextView unloadingDate = findViewById(R.id.unloading_date);
-         TextView weight = findViewById(R.id.cargo_weight);
-         TextView unit = findViewById(R.id.unit);
-         TextView volume = findViewById(R.id.textView5);
-         TextView packageType = findViewById(R.id.package_type);
-         TextView quantity = findViewById(R.id.textView11);
-         TextView beltQuantity = findViewById(R.id.textView13);
-         ShapeableImageView profileImage = findViewById(R.id.profile_picture);
-         TextView loadingLocationn = findViewById(R.id.loading_location);
-         TextView unloadingLocationn = findViewById(R.id.unloading_location);
-         TextView price = findViewById(R.id.textView17);
+        TextView textViewTitle = findViewById(R.id.title);
+        TextView textViewDescription = findViewById(R.id.description);
+        ImageView imageView = findViewById(R.id.imageView);
+        TextView loadingDate = findViewById(R.id.loading_date);
+        TextView unloadingDate = findViewById(R.id.unloading_date);
+        TextView weight = findViewById(R.id.cargo_weight);
+        TextView unit = findViewById(R.id.unit);
+        TextView volume = findViewById(R.id.textView5);
+        TextView bodyType = findViewById(R.id.package_type);
+        ShapeableImageView profileImage = findViewById(R.id.profile_picture);
+        TextView loadingLocationn = findViewById(R.id.loading_location);
+        TextView unloadingLocationn = findViewById(R.id.unloading_location);
 
 
 
         // Populate your views with the post data
-        textViewTitle.setText(post.getTitle());
-        textViewDescription.setText(post.getDescription());
-        loadingDate.setText(post.getDate());
-        unloadingDate.setText(post.getUnloadingDate());
-        weight.setText(String.valueOf(post.getWeight()));
-        unit.setText(post.getUnit());
-        volume.setText(String.valueOf(post.getVolume()));
-        packageType.setText(post.getPackageType());
-        quantity.setText(String.valueOf(post.getPackageQuantity()));
-        beltQuantity.setText(String.valueOf(post.getBeltQuantity()));
-        price.setText(post.getPrice());
+        textViewTitle.setText(truck.getTitle());
+        textViewDescription.setText(truck.getDescription());
+        loadingDate.setText(truck.getDate());
+        unloadingDate.setText(truck.getUnloadingDate());
+        weight.setText(String.valueOf(truck.getWeight()));
+        unit.setText(truck.getUnit());
+        volume.setText(String.valueOf(truck.getVolume()));
+        bodyType.setText(truck.getBodyType());
 
-        String loadingLocationAddress = post.getLoadingLocationAddress(this);
+        String loadingLocationAddress = truck.getLoadingLocationAddress(this);
         if (loadingLocationAddress != null) {
             loadingLocationn.setText(loadingLocationAddress);
         }
 
-        String unloadingLocationAddress = post.getUnLoadingLocationAddress(this);
+        String unloadingLocationAddress = truck.getUnLoadingLocationAddress(this);
         if(unloadingLocationAddress != null) {
             unloadingLocationn.setText(unloadingLocationAddress);
         }
 
 
-        String userId = post.getUserId();
+        String userId = truck.getUserId();
 
 
         // Retrieve the user's information from the database
@@ -153,7 +144,7 @@ public class DescriptionActivity extends AppCompatActivity {
 
                     // Download and display the profile image from the URL
                     if (profileImageUrl != null) {
-                        Glide.with(DescriptionActivity.this)
+                        Glide.with(TruckDescription.this)
                                 .load(profileImageUrl)
                                 .into(profileImage);
 
@@ -172,7 +163,7 @@ public class DescriptionActivity extends AppCompatActivity {
 
 
         Glide.with(this)
-                .load(post.getImageUrl())
+                .load(truck.getImageUrl())
                 .into(imageView);
     }
 

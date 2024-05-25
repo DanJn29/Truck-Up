@@ -27,12 +27,15 @@
 
         <TextView
             android:id="@+id/username"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:layout_marginTop="32dp"
+            android:layout_marginStart="12dp"
             android:text="User_Name"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textSize="20dp"
+            app:layout_constraintEnd_toStartOf="@+id/settings"
             app:layout_constraintStart_toEndOf="@+id/profile_picture"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -95,7 +98,7 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Posts" />
+                android:text="Loads" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"

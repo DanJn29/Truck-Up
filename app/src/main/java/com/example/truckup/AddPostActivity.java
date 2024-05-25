@@ -308,6 +308,7 @@ public class AddPostActivity extends AppCompatActivity {
                 int selectedUnitId = unitRadioGroup.getCheckedRadioButtonId();
                 RadioButton selectedRadioButton = findViewById(selectedUnitId);
                 String selectedUnit = selectedRadioButton.getText().toString();
+                String price = ((EditText) findViewById(R.id.editTextPrice)).getText().toString();
 
 
 
@@ -329,6 +330,7 @@ public class AddPostActivity extends AppCompatActivity {
                 post.setUnloadingDate(unLoadingDateTextView.getText().toString());
                 post.setLoadingLocation(selectedLoadingLocation.getLatitude() + "," + selectedLoadingLocation.getLongitude());
                 post.setUnloadingLocation(selectedUnloadingLocation.getLatitude() + "," + selectedUnloadingLocation.getLongitude());
+                post.setPrice(price);
 
                 // Write Post object to Firebase database under the current user's node
                 databaseReference.child("users").child(userId).child("posts").child(postId).setValue(post)

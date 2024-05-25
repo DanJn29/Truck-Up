@@ -37,4 +37,21 @@
         <item>sheets</item>
         <item>barrels</item>
     </string-array>
+
+    <string-array name="variants_array_trucks">
+        <item>not indicated</item>
+        <item>tented</item>
+        <item>container</item>
+        <item>van</item>
+        <item>all metal.</item>
+        <item>isothermal</item>
+        <item>refrigerator</item>
+        <item>onboard</item>
+        <item>dump truck</item>
+        <item>scow</item>
+        <item>ref.multimode</item>
+        <item>ref.with partition</item>
+        <item>ref.tushevoz</item>
+        <item>Open contact</item>
+    </string-array>
 </resources>

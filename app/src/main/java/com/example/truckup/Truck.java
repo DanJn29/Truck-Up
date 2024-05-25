@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
-public class Post implements Serializable {
+public class Truck implements Serializable {
 
     private String username;
 
@@ -18,9 +18,7 @@ public class Post implements Serializable {
     private String imageUrl;
     private String title;
     private String description;
-    private int beltQuantity;
-    private int packageQuantity;
-    private String packageType;
+    private String bodyType;
     private double volume;
     private double weight;
     private String unit;
@@ -32,17 +30,15 @@ public class Post implements Serializable {
     private String price;
 
     // Default constructor is needed for Firebase
-    public Post() {}
+    public Truck() {}
 
-    public Post(String id, String userId, String imageUrl, String title, String description, int beltQuantity, int packageQuantity, String packageType, double volume, double weight) {
+    public Truck(String id, String userId, String imageUrl, String title, String description, String bodytype, double volume, double weight) {
         this.id = id;
         this.userId = userId;
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
-        this.beltQuantity = beltQuantity;
-        this.packageQuantity = packageQuantity;
-        this.packageType = packageType;
+        this.bodyType = bodytype;
         this.volume = volume;
         this.weight = weight;
     }
@@ -88,25 +84,11 @@ public class Post implements Serializable {
         this.description = description;
     }
 
-    public int getBeltQuantity() {
-        return beltQuantity;
+    public String getBodyType() {
+        return bodyType;
     }
-    public void setBeltQuantity(int beltQuantity) {
-        this.beltQuantity = beltQuantity;
-    }
-
-    public int getPackageQuantity() {
-        return packageQuantity;
-    }
-    public void setPackageQuantity(int packageQuantity) {
-        this.packageQuantity = packageQuantity;
-    }
-
-    public String getPackageType() {
-        return packageType;
-    }
-    public void setPackageType(String packageType) {
-        this.packageType = packageType;
+    public void setBodyType(String bodytype) {
+        this.bodyType = bodytype;
     }
 
     public double getVolume() {
