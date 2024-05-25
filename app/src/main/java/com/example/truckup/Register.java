@@ -3,11 +3,9 @@ package com.example.truckup;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class Register extends AppCompatActivity {
 
-    EditText editTextEmail, editTextPassword, editTextUsername, repeatPassword;
+    EditText editTextEmail, editTextPassword, editTextUsername, repeatPassword, editTextPhone;
     Button buttonReg;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
@@ -59,6 +56,7 @@ public class Register extends AppCompatActivity {
         textView = findViewById(R.id.sign_in_now);
         editTextUsername = findViewById(R.id.username_et);
         repeatPassword = findViewById(R.id.repeatPassword_et);
+        editTextPhone = findViewById(R.id.phone_et);
 
 
 
@@ -167,9 +165,10 @@ public class Register extends AppCompatActivity {
                                 // Get the username of the current user
                                 String uid = firebaseUser.getUid();
                                 String username = editTextUsername.getText().toString();
+                                String phoneNumber = editTextPhone.getText().toString();
 
                                 // Create a User object
-                                User user = new User(username);
+                                User user = new User(username, phoneNumber);
 
                                 // Create a DatabaseReference to the Firebase Realtime Database
                                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();

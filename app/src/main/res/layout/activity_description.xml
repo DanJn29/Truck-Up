@@ -56,8 +56,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="56dp"
-                        android:textSize="20sp"
                         android:layout_marginTop="10dp"
+                        android:textSize="20sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/title"
                         tools:text="Description" />
@@ -116,11 +116,11 @@
                     <TextView
                         android:id="@+id/unloading_date"
                         android:layout_width="wrap_content"
-                        android:layout_marginTop="35dp"
-                        android:layout_marginStart="12dp"
-                        android:textSize="20sp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="35dp"
                         android:text="UnLoading Date"
+                        android:textSize="20sp"
                         app:layout_constraintStart_toEndOf="@+id/arrow"
                         app:layout_constraintTop_toBottomOf="@+id/description" />
 
@@ -139,8 +139,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="41dp"
-                        android:textSize="20sp"
                         android:text="Weight"
+                        android:textSize="20sp"
                         app:layout_constraintStart_toEndOf="@+id/imageView9"
                         app:layout_constraintTop_toBottomOf="@+id/loading_date" />
 
@@ -170,16 +170,16 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="48dp"
-                        android:textSize="20sp"
                         android:text="Volume"
+                        android:textSize="20sp"
                         app:layout_constraintStart_toEndOf="@+id/imageView11"
                         app:layout_constraintTop_toBottomOf="@+id/cargo_weight" />
 
                     <TextView
                         android:id="@+id/textView6"
-                        android:layout_marginTop="48dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="48dp"
                         android:text="M³"
                         android:textSize="20sp"
                         app:layout_constraintStart_toEndOf="@+id/textView5"
@@ -193,16 +193,16 @@
                         android:text="Package type"
                         android:textColor="@color/gray1"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView11" />
+                        app:layout_constraintTop_toBottomOf="@+id/unloading_location" />
 
                     <TextView
                         android:id="@+id/package_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextView"
-                        android:layout_marginTop="10dp"
-                        android:textSize="20sp"
                         android:layout_marginStart="58dp"
+                        android:layout_marginTop="10dp"
+                        android:text="TextView"
+                        android:textSize="20sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -210,9 +210,9 @@
                         android:id="@+id/textView10"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
                         android:text="Quantity"
                         android:textColor="@color/gray1"
-                        android:layout_marginTop="40dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -220,9 +220,9 @@
                         android:id="@+id/textView11"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextView"
                         android:layout_marginStart="58dp"
                         android:layout_marginTop="10dp"
+                        android:text="TextView"
                         android:textSize="20sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -231,9 +231,9 @@
                         android:id="@+id/textView12"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
                         android:text="Belt quantity"
                         android:textColor="@color/gray1"
-                        android:layout_marginTop="40dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
@@ -241,20 +241,30 @@
                         android:id="@+id/textView13"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TextView"
                         android:layout_marginStart="58dp"
                         android:layout_marginTop="10dp"
+                        android:text="TextView"
                         android:textSize="20sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+                    <org.osmdroid.views.MapView
+                        android:id="@+id/map"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="30dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardView"
                         android:layout_width="357dp"
                         android:layout_height="150dp"
+                        android:layout_marginTop="10dp"
                         android:background="@drawable/card_background"
                         app:cardCornerRadius="20dp"
-                        android:layout_marginTop="10dp"
                         app:cardElevation="10dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -279,6 +289,24 @@
                             android:layout_marginTop="40dp"
                             android:text="Username"
                             android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/textView9"
+                            android:layout_width="wrap_content"
+                            android:layout_marginStart="235dp"
+                            android:layout_marginTop="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="TextView" />
+
+                        <TextView
+                            android:id="@+id/textView16"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="130dp"
+                            android:layout_marginTop="80dp"
+
+                            android:textStyle="bold"
+                            android:text="Phone Number:" />
                     </androidx.cardview.widget.CardView>
 
                     <View
@@ -291,13 +319,58 @@
                         android:id="@+id/textView15"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="25dp"
                         android:text="Employer"
+                        android:layout_marginTop="30dp"
                         android:textSize="25sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+                        app:layout_constraintTop_toBottomOf="@+id/map" />
+
+                    <ImageView
+                        android:id="@+id/imageView10"
+                        android:layout_width="51dp"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="30dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView11"
+                        app:srcCompat="@drawable/baseline_location_pin_24" />
+
+                    <TextView
+                        android:id="@+id/loading_location"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="58dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Loading Location"
+                        android:textSize="20sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageView10"
+                        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+                    <ImageView
+                        android:id="@+id/imageView12"
+                        android:layout_width="36dp"
+                        android:layout_height="31dp"
+                        android:layout_marginStart="116dp"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/loading_location"
+                        app:srcCompat="@drawable/baseline_arrow_downward_24" />
+
+                    <TextView
+                        android:id="@+id/unloading_location"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="Unloading Location"
+                        android:textSize="20sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/loading_location"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView12" />
 
 
                     <!-- Add your buttons here -->

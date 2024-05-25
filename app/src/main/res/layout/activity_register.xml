@@ -110,16 +110,36 @@
             android:ems="10"
             android:hint="Repeat Password"
             android:inputType="textPassword"
-            app:endIconMode="password_toggle"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:textSize="14sp"
+            app:endIconMode="password_toggle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password_et">
 
         </com.google.android.material.textfield.TextInputEditText>
+
+        <EditText
+            android:id="@+id/phone_et"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/custom_phone_icon"
+            android:drawablePadding="12dp"
+            android:ems="10"
+            android:hint="Phone number"
+            android:inputType="phone"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/repeatPassword_et">
+
+        </EditText>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -145,7 +165,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/repeatPassword_et" />
+            app:layout_constraintTop_toBottomOf="@+id/phone_et" />
 
         <View
             android:id="@+id/view"

@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         // Listen for changes in the users node
-        usersRef.addValueEventListener(new ValueEventListener() {
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postList.clear();
@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment {
                     DatabaseReference postsRef = usersRef.child(userSnapshot.getKey()).child("posts");
 
                     // Listen for changes in the posts node of the current user
-                    postsRef.addValueEventListener(new ValueEventListener() {
+                    postsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             ArrayList<Post> tempList = new ArrayList<>();

@@ -1,13 +1,11 @@
 package com.example.truckup;
 
-import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,7 +24,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,15 +40,17 @@ import com.yalantis.ucrop.UCrop;
 import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class AddPostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
@@ -62,6 +61,7 @@ public class AddPostActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_REQUEST_CODE = 100;
     private ShapeableImageView selectImage; // Define selectImage as a field
+    private GeoPoint selectedLoadingLocation, selectedUnloadingLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,33 +163,45 @@ public class AddPostActivity extends AppCompatActivity {
                 map.setBuiltInZoomControls(true);
                 map.setMultiTouchControls(true);
 
-                MapController mapController = (MapController) map.getController();
-                mapController.setZoom(9.5);
+                // Create the MyLocationNewOverlay and add it to the map
+                MyLocationNewOverlay myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(AddPostActivity.this), map);
+                myLocationOverlay.enableMyLocation();
+                map.getOverlays().add(myLocationOverlay); // Add the overlay to the map
 
-                // Check if the location permissions have been granted
-                if (ActivityCompat.checkSelfPermission(AddPostActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(AddPostActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    // Get the device's current location
-                    LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                    if (location != null) {
-                        // Set the map's center to the device's current location
-                        GeoPoint currentLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
-                        mapController.setCenter(currentLocation);
+                myLocationOverlay.runOnFirstFix(new Runnable() {
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                map.getController().animateTo(myLocationOverlay.getMyLocation());
+                                map.getController().setZoom(16.0);
+                            }
+                        });
                     }
+                });
 
-                    // Add a marker at the device's current location
-                    MyLocationNewOverlay myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(AddPostActivity.this), map);
-                    myLocationOverlay.enableMyLocation();
-                    map.getOverlays().add(myLocationOverlay);
-                }
-
+                // Add a MapEventsReceiver to listen for tap events
                 MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
                     @Override
                     public boolean singleTapConfirmedHelper(GeoPoint p) {
-                        loadingLocationTextView.setText(p.getLatitude() + ", " + p.getLongitude());
+                        // Get the address of the tapped location using Geocoder
+                        Geocoder geocoder = new Geocoder(AddPostActivity.this, Locale.getDefault());
+                        List<Address> addresses = null;
+                        try {
+                            addresses = geocoder.getFromLocation(p.getLatitude(), p.getLongitude(), 1);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (addresses != null && !addresses.isEmpty()) {
+                            Address address = addresses.get(0);
+                            // Update the TextView with the address
+                            loadingLocationTextView.setText(address.getAddressLine(0));
+                        }
+
+                        selectedLoadingLocation = p;
                         dialog.dismiss();
+
                         return true;
                     }
 
@@ -199,11 +211,83 @@ public class AddPostActivity extends AppCompatActivity {
                     }
                 };
 
-                map.getOverlays().add(new MapEventsOverlay(mapEventsReceiver));
+                MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(mapEventsReceiver);
+                map.getOverlays().add(0, mapEventsOverlay); // Insert at the "bottom" of all overlays
 
                 dialog.show();
             }
         });
+
+
+        unLoadingLocationTextView = findViewById(R.id.unloading_location);
+        unLoadingLocationTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(AddPostActivity.this);
+                dialog.setContentView(R.layout.dialog_map);
+
+                MapView map = dialog.findViewById(R.id.map);
+                map.setTileSource(TileSourceFactory.MAPNIK);
+
+                // Enable zoom controls and multi-touch controls
+                map.setBuiltInZoomControls(true);
+                map.setMultiTouchControls(true);
+
+                // Create the MyLocationNewOverlay and add it to the map
+                MyLocationNewOverlay myLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(AddPostActivity.this), map);
+                myLocationOverlay.enableMyLocation();
+                map.getOverlays().add(myLocationOverlay); // Add the overlay to the map
+
+                myLocationOverlay.runOnFirstFix(new Runnable() {
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                map.getController().animateTo(myLocationOverlay.getMyLocation());
+                                map.getController().setZoom(16.0);
+                            }
+                        });
+                    }
+                });
+
+                // Add a MapEventsReceiver to listen for tap events
+                MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
+                    @Override
+                    public boolean singleTapConfirmedHelper(GeoPoint p) {
+                        // Get the address of the tapped location using Geocoder
+                        Geocoder geocoder = new Geocoder(AddPostActivity.this, Locale.getDefault());
+                        List<Address> addresses = null;
+                        try {
+                            addresses = geocoder.getFromLocation(p.getLatitude(), p.getLongitude(), 1);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (addresses != null && !addresses.isEmpty()) {
+                            Address address = addresses.get(0);
+                            // Update the TextView with the address
+                            unLoadingLocationTextView.setText(address.getAddressLine(0));
+                        }
+
+                        selectedUnloadingLocation = p;
+                        dialog.dismiss();
+
+                        return true;
+                    }
+
+                    @Override
+                    public boolean longPressHelper(GeoPoint p) {
+                        return false;
+                    }
+                };
+
+                MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(mapEventsReceiver);
+                map.getOverlays().add(0, mapEventsOverlay); // Insert at the "bottom" of all overlays
+
+                dialog.show();
+            }
+        });
+
 
 
 
@@ -243,6 +327,8 @@ public class AddPostActivity extends AppCompatActivity {
                 post.setUnit(selectedUnit);
                 post.setDate(loadingDateTextView.getText().toString());
                 post.setUnloadingDate(unLoadingDateTextView.getText().toString());
+                post.setLoadingLocation(selectedLoadingLocation.getLatitude() + "," + selectedLoadingLocation.getLongitude());
+                post.setUnloadingLocation(selectedUnloadingLocation.getLatitude() + "," + selectedUnloadingLocation.getLongitude());
 
                 // Write Post object to Firebase database under the current user's node
                 databaseReference.child("users").child(userId).child("posts").child(postId).setValue(post)

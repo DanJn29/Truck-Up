@@ -1,6 +1,13 @@
 package com.example.truckup;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Locale;
 
 public class Post implements Serializable {
 
@@ -148,6 +155,47 @@ public class Post implements Serializable {
     }
     public void setUnloadingLocation(String unloadingLocation) {
         this.unloadingLocation = unloadingLocation;
+    }
+    public String getLoadingLocationAddress(Context context) {
+        String[] coordinates = loadingLocation.split(",");
+        double latitude = Double.parseDouble(coordinates[0]);
+        double longitude = Double.parseDouble(coordinates[1]);
+
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (addresses != null && !addresses.isEmpty()) {
+            Address address = addresses.get(0);
+            return address.getAddressLine(0);
+        }
+
+        return null;
+    }
+
+    public String getUnLoadingLocationAddress(Context context) {
+        String[] coordinates = unloadingLocation.split(",");
+        double latitude = Double.parseDouble(coordinates[0]);
+        double longitude = Double.parseDouble(coordinates[1]);
+
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (addresses != null && !addresses.isEmpty()) {
+            Address address = addresses.get(0);
+            return address.getAddressLine(0);
+        }
+
+        return null;
     }
 
 
