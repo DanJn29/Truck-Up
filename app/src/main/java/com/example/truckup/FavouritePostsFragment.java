@@ -29,6 +29,7 @@ public class FavouritePostsFragment extends Fragment {
     private PostAdapter postAdapter;
     private TruckAdapter truckAdapter;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,8 +41,7 @@ public class FavouritePostsFragment extends Fragment {
         recyclerViewTrucks.setLayoutManager(new LinearLayoutManager(getContext()));
 
         loadFavouritePosts();
-        loadFavouriteTrucks();
-
+        loadFavouriteTrucks(view);
 
         return view;
     }
@@ -79,9 +79,12 @@ public class FavouritePostsFragment extends Fragment {
         });
     }
 
-    private void loadFavouriteTrucks() {
+    private void loadFavouriteTrucks(View view) {
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUserId).child("likedTrucks");
+
+        // Get a reference to the View
+        View dividerView = view.findViewById(R.id.view);
 
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -96,8 +99,10 @@ public class FavouritePostsFragment extends Fragment {
 
                 if (trucks.isEmpty()) {
                     recyclerViewTrucks.setVisibility(View.GONE);
+                    dividerView.setVisibility(View.GONE); // Make the View invisible
                 } else {
                     recyclerViewTrucks.setVisibility(View.VISIBLE);
+                    dividerView.setVisibility(View.VISIBLE); // Make the View visible
                     Collections.reverse(trucks);
                     truckAdapter = new TruckAdapter(getContext(), trucks);
                     recyclerViewTrucks.setAdapter(truckAdapter);
