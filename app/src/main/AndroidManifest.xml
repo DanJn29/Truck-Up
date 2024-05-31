@@ -18,10 +18,8 @@
         android:theme="@style/Theme.TruckUp"
         tools:targetApi="31">
         <activity
-            android:name=".AdminActivity"
-            android:exported="false" />
-        <activity
             android:name=".TruckDescription"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".DescriptionActivity"
@@ -41,6 +39,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".SplashActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

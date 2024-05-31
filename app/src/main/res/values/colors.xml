@@ -12,5 +12,6 @@
     <color name="gray1">#858C85</color>
     <color name="red1">#FF0000</color>
     <color name="green_map">#48D532</color>
+    <color name="elec_blue">#073BAB</color>
 
 </resources>

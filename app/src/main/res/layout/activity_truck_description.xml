@@ -260,22 +260,25 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="TextView"
+                                android:autoLink="phone"
+                                android:layout_marginStart="4dp"
+                                android:textColorLink="@color/elec_blue"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
-                                app:layout_constraintStart_toEndOf="@+id/textView16"
+                                app:layout_constraintStart_toEndOf="@+id/phone_icon"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintVertical_bias="0.0" />
 
-                            <TextView
-                                android:id="@+id/textView16"
+
+                            <ImageView
+                                android:id="@+id/phone_icon"
+                                android:src="@drawable/baseline_phone_241"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Phone Number:"
-                                android:textStyle="bold"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                app:layout_constraintTop_toTopOf="parent"/>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
