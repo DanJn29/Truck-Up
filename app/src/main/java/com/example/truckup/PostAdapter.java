@@ -1,8 +1,11 @@
-
 package com.example.truckup;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +25,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -47,13 +53,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Post post = postList.get(position);
         holder.textViewTitle.setText(post.getTitle());
         holder.textViewDescription.setText(post.getDescription());
-        holder.userName.setText(post.getUsername());
         holder.weight.setText(String.valueOf(post.getWeight()));
         holder.KgOrTonnes.setText(post.getUnit());
         holder.Date.setText(post.getDate());
         holder.UnLoadingDate.setText(post.getUnloadingDate());
         holder.price.setText(post.getPrice());
 
+        setCountryFlags(holder, post.getLoadingLocationAddress(context), post.getUnLoadingLocationAddress(context));
 
         // Get the current user's ID
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -149,11 +155,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.unloadingLocationn.setText("Unloading Location not set");
         }
 
-        // Download the image from the URL and set it to the ImageView
-        Glide.with(context)
-                .load(post.getImageUrl())
-                .into(holder.imageView5);
-
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,20 +165,98 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
     }
 
+    private void setCountryFlags(PostViewHolder holder, String fromLocation, String toLocation) {
+        String fromCountryCode = getCountryCodeFromLocation(fromLocation);
+        String toCountryCode = getCountryCodeFromLocation(toLocation);
+
+        Log.d("PostAdapter", "From Country Code: " + fromCountryCode);
+        Log.d("PostAdapter", "To Country Code: " + toCountryCode);
+
+        String fromFlagPath = "file:///android_asset/flags/" + fromCountryCode + ".png";
+        String toFlagPath = "file:///android_asset/flags/" + toCountryCode + ".png";
+
+        Log.d("PostAdapter", "From Flag Path: " + fromFlagPath);
+        Log.d("PostAdapter", "To Flag Path: " + toFlagPath);
+
+        AssetManager assetManager = context.getAssets();
+        try {
+            String[] fromFlagFiles = assetManager.list("flags");
+            String[] toFlagFiles = assetManager.list("flags");
+
+            boolean fromFlagExists = false;
+            boolean toFlagExists = false;
+
+            if (fromFlagFiles != null) {
+                for (String fileName : fromFlagFiles) {
+                    if (fileName.equals(fromCountryCode + ".png")) {
+                        fromFlagExists = true;
+                        break;
+                    }
+                }
+            }
+
+            if (toFlagFiles != null) {
+                for (String fileName : toFlagFiles) {
+                    if (fileName.equals(toCountryCode + ".png")) {
+                        toFlagExists = true;
+                        break;
+                    }
+                }
+            }
+
+            if (fromFlagExists) {
+                Log.d("PostAdapter", "From Flag File exists");
+            } else {
+                Log.d("PostAdapter", "From Flag File does not exist");
+            }
+
+            if (toFlagExists) {
+                Log.d("PostAdapter", "To Flag File exists");
+            } else {
+                Log.d("PostAdapter", "To Flag File does not exist");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Glide.with(context)
+                .load(fromFlagPath)
+                .into(holder.fromCountryFlag);
+
+        Glide.with(context)
+                .load(toFlagPath)
+                .into(holder.toCountryFlag);
+    }
+
+    private String getCountryCodeFromLocation(String location) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocationName(location, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                String countryCode = addresses.get(0).getCountryCode().toLowerCase();
+                Log.d("PostAdapter", "Country Code for location " + location + ": " + countryCode);
+                return countryCode;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "unknown";
+    }
+
     @Override
     public int getItemCount() {
-        int itemCount = postList.size();
-        return itemCount;
+        return postList.size();
     }
+
     @Override
     public long getItemId(int position) {
-        // Assuming that getId() returns a unique ID for each post
         return postList.get(position).getId().hashCode();
     }
 
     public class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTitle, textViewDescription, userName,weight,KgOrTonnes,Date,UnLoadingDate,loadingLocationn,unloadingLocationn,price;
-        ImageView imageView5;
+        TextView textViewTitle, textViewDescription, weight, KgOrTonnes, Date, UnLoadingDate, loadingLocationn, unloadingLocationn, price;
+        ImageView fromCountryFlag, toCountryFlag;
         ImageButton favoriteButton;
         MaterialCardView cardView;
 
@@ -185,9 +264,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.post_title);
             textViewDescription = itemView.findViewById(R.id.post_description);
-            imageView5 = itemView.findViewById(R.id.imageView5);
+            fromCountryFlag = itemView.findViewById(R.id.from_country_flag);
+            toCountryFlag = itemView.findViewById(R.id.to_country_flag);
             cardView = itemView.findViewById(R.id.card_view);
-            userName = itemView.findViewById(R.id.username);
             weight = itemView.findViewById(R.id.cargo_weight);
             KgOrTonnes = itemView.findViewById(R.id.kg_or_tonnes);
             Date = itemView.findViewById(R.id.date);

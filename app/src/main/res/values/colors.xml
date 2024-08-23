@@ -7,11 +7,12 @@
     <color name="dark_purpule">#0F7DC7</color>
     <color name="dark_green">#177103</color>
     <color name="gray">#9EA59D</color>
-    <color name="primary_container">#DFF9FC</color>
-    <color name="secondary_container">#DFF9FC</color>
+    <color name="primary_container">#B9F9B0</color>
+    <color name="secondary_container">#B9F9B0</color>
     <color name="gray1">#858C85</color>
     <color name="red1">#FF0000</color>
     <color name="green_map">#48D532</color>
     <color name="elec_blue">#073BAB</color>
+    <color name="item_tint">#F2F2F2</color>
 
 </resources>
