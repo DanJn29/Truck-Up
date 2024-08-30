@@ -3,6 +3,9 @@ package com.example.truckup;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +25,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 
 public class TruckAdapter extends RecyclerView.Adapter<TruckAdapter.TruckViewHolder> {
 
@@ -47,12 +57,14 @@ public class TruckAdapter extends RecyclerView.Adapter<TruckAdapter.TruckViewHol
         Truck truck = truckList.get(position);
         holder.textViewTitle.setText(truck.getTitle());
         holder.textViewDescription.setText(truck.getDescription());
-        holder.userName.setText(truck.getUsername());
         holder.weight.setText(String.valueOf(truck.getWeight()));
         holder.KgOrTonnes.setText(truck.getUnit());
         holder.Date.setText(truck.getDate());
         holder.UnLoadingDate.setText(truck.getUnloadingDate());
         holder.price.setText(truck.getPrice());
+
+        setCountryFlags(holder, truck.getLoadingLocationAddress(context), truck.getUnLoadingLocationAddress(context));
+
 
 
         // Get the current user's ID
@@ -150,10 +162,7 @@ public class TruckAdapter extends RecyclerView.Adapter<TruckAdapter.TruckViewHol
             holder.unloadingLocationn.setText("Unloading Location not set");
         }
 
-        // Download the image from the URL and set it to the ImageView
-        Glide.with(context)
-                .load(truck.getImageUrl())
-                .into(holder.imageView5);
+
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,6 +173,67 @@ public class TruckAdapter extends RecyclerView.Adapter<TruckAdapter.TruckViewHol
             }
         });
     }
+
+        private void setCountryFlags(TruckAdapter.TruckViewHolder holder, String fromLocation, String toLocation) {
+        String fromCountryCode = getCountryCodeFromLocation(fromLocation);
+        String toCountryCode = getCountryCodeFromLocation(toLocation);
+
+        downloadFlagImage(fromCountryCode);
+        downloadFlagImage(toCountryCode);
+
+        String fromFlagPath = new File(context.getFilesDir(), fromCountryCode + ".png").getAbsolutePath();
+        String toFlagPath = new File(context.getFilesDir(), toCountryCode + ".png").getAbsolutePath();
+
+        Glide.with(context)
+                .load(fromFlagPath)
+                .into(holder.fromCountryFlag);
+
+        Glide.with(context)
+                .load(toFlagPath)
+                .into(holder.toCountryFlag);
+    }
+
+    private String getCountryCodeFromLocation(String location) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocationName(location, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                String countryCode = addresses.get(0).getCountryCode().toLowerCase();
+                Log.d("PostAdapter", "Country Code for location " + location + ": " + countryCode);
+                return countryCode;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "unknown";
+    }
+
+    private void downloadFlagImage(String countryCode) {
+        String flagUrl = "https://flagcdn.com/w2560/" + countryCode + ".png"; // Replace with the actual URL
+        String fileName = countryCode + ".png";
+        File file = new File(context.getFilesDir(), fileName);
+
+        new Thread(() -> {
+            try {
+                URL url = new URL(flagUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                FileOutputStream output = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+                output.close();
+                input.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
 
     @Override
     public int getItemCount() {
@@ -177,8 +247,8 @@ public class TruckAdapter extends RecyclerView.Adapter<TruckAdapter.TruckViewHol
     }
 
     public class TruckViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTitle, textViewDescription, userName,weight,KgOrTonnes,Date,UnLoadingDate,loadingLocationn,unloadingLocationn,price;
-        ImageView imageView5;
+        TextView textViewTitle, textViewDescription,weight,KgOrTonnes,Date,UnLoadingDate,loadingLocationn,unloadingLocationn,price;
+        ImageView fromCountryFlag, toCountryFlag;
         ImageButton favoriteButton;
         MaterialCardView cardView;
 
@@ -186,9 +256,9 @@ public class TruckAdapter extends RecyclerView.Adapter<TruckAdapter.TruckViewHol
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.post_title);
             textViewDescription = itemView.findViewById(R.id.post_description);
-            imageView5 = itemView.findViewById(R.id.imageView5);
+            fromCountryFlag = itemView.findViewById(R.id.from_country_flag);
+            toCountryFlag = itemView.findViewById(R.id.to_country_flag);
             cardView = itemView.findViewById(R.id.card_view);
-            userName = itemView.findViewById(R.id.username);
             weight = itemView.findViewById(R.id.cargo_weight);
             KgOrTonnes = itemView.findViewById(R.id.kg_or_tonnes);
             Date = itemView.findViewById(R.id.date);

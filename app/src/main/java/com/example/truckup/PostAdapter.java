@@ -26,7 +26,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,6 +62,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.Date.setText(post.getDate());
         holder.UnLoadingDate.setText(post.getUnloadingDate());
         holder.price.setText(post.getPrice());
+
 
         setCountryFlags(holder, post.getLoadingLocationAddress(context), post.getUnLoadingLocationAddress(context));
 
@@ -165,60 +170,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
     }
 
+
+
     private void setCountryFlags(PostViewHolder holder, String fromLocation, String toLocation) {
         String fromCountryCode = getCountryCodeFromLocation(fromLocation);
         String toCountryCode = getCountryCodeFromLocation(toLocation);
 
-        Log.d("PostAdapter", "From Country Code: " + fromCountryCode);
-        Log.d("PostAdapter", "To Country Code: " + toCountryCode);
+        downloadFlagImage(fromCountryCode);
+        downloadFlagImage(toCountryCode);
 
-        String fromFlagPath = "file:///android_asset/flags/" + fromCountryCode + ".png";
-        String toFlagPath = "file:///android_asset/flags/" + toCountryCode + ".png";
-
-        Log.d("PostAdapter", "From Flag Path: " + fromFlagPath);
-        Log.d("PostAdapter", "To Flag Path: " + toFlagPath);
-
-        AssetManager assetManager = context.getAssets();
-        try {
-            String[] fromFlagFiles = assetManager.list("flags");
-            String[] toFlagFiles = assetManager.list("flags");
-
-            boolean fromFlagExists = false;
-            boolean toFlagExists = false;
-
-            if (fromFlagFiles != null) {
-                for (String fileName : fromFlagFiles) {
-                    if (fileName.equals(fromCountryCode + ".png")) {
-                        fromFlagExists = true;
-                        break;
-                    }
-                }
-            }
-
-            if (toFlagFiles != null) {
-                for (String fileName : toFlagFiles) {
-                    if (fileName.equals(toCountryCode + ".png")) {
-                        toFlagExists = true;
-                        break;
-                    }
-                }
-            }
-
-            if (fromFlagExists) {
-                Log.d("PostAdapter", "From Flag File exists");
-            } else {
-                Log.d("PostAdapter", "From Flag File does not exist");
-            }
-
-            if (toFlagExists) {
-                Log.d("PostAdapter", "To Flag File exists");
-            } else {
-                Log.d("PostAdapter", "To Flag File does not exist");
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String fromFlagPath = new File(context.getFilesDir(), fromCountryCode + ".png").getAbsolutePath();
+        String toFlagPath = new File(context.getFilesDir(), toCountryCode + ".png").getAbsolutePath();
 
         Glide.with(context)
                 .load(fromFlagPath)
@@ -243,6 +205,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
         return "unknown";
     }
+
+    private void downloadFlagImage(String countryCode) {
+        String flagUrl = "https://flagcdn.com/w2560/" + countryCode + ".png"; // Replace with the actual URL
+        String fileName = countryCode + ".png";
+        File file = new File(context.getFilesDir(), fileName);
+
+        new Thread(() -> {
+            try {
+                URL url = new URL(flagUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                FileOutputStream output = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+                output.close();
+                input.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
 
     @Override
     public int getItemCount() {
