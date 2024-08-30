@@ -235,17 +235,36 @@ public class TruckAdapter extends RecyclerView.Adapter<TruckAdapter.TruckViewHol
     }
 
     public void deleteTruck(Truck truck, int position) {
-        // Use the user ID associated with the post
+        // Use the user ID associated with the truck
         String postUserId = truck.getUserId();
         DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("users")
                 .child(postUserId)
                 .child("trucks")
                 .child(truck.getId());
+
+        // Remove the truck from the user's trucks node
         postRef.removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 truckList.remove(position);
                 notifyItemRemoved(position);
                 Log.d("TruckAdapter", "Truck deleted: " + truck.getId());
+
+                // Remove the truck from the likedTrucks node of all users
+                DatabaseReference likedTrucksRef = FirebaseDatabase.getInstance().getReference("users");
+                likedTrucksRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            DatabaseReference userLikedTrucksRef = userSnapshot.getRef().child("likedTrucks").child(truck.getId());
+                            userLikedTrucksRef.removeValue();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("TruckAdapter", "Failed to remove truck from likedTrucks: " + truck.getId());
+                    }
+                });
             } else {
                 Log.e("TruckAdapter", "Failed to delete truck: " + truck.getId());
             }

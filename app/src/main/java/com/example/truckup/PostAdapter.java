@@ -240,11 +240,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 .child(postUserId)
                 .child("posts")
                 .child(post.getId());
+
+        // Remove the post from the user's posts node
         postRef.removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 postList.remove(position);
                 notifyItemRemoved(position);
                 Log.d("PostAdapter", "Post deleted: " + post.getId());
+
+                // Remove the post from the likedPosts node of all users
+                DatabaseReference likedPostsRef = FirebaseDatabase.getInstance().getReference("users");
+                likedPostsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            DatabaseReference userLikedPostsRef = userSnapshot.getRef().child("likedPosts").child(post.getId());
+                            userLikedPostsRef.removeValue();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("PostAdapter", "Failed to remove post from likedPosts: " + post.getId());
+                    }
+                });
             } else {
                 Log.e("PostAdapter", "Failed to delete post: " + post.getId());
             }
