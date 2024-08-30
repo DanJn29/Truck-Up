@@ -234,6 +234,24 @@ public class TruckAdapter extends RecyclerView.Adapter<TruckAdapter.TruckViewHol
         }).start();
     }
 
+    public void deleteTruck(Truck truck, int position) {
+        // Use the user ID associated with the post
+        String postUserId = truck.getUserId();
+        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("users")
+                .child(postUserId)
+                .child("trucks")
+                .child(truck.getId());
+        postRef.removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                truckList.remove(position);
+                notifyItemRemoved(position);
+                Log.d("TruckAdapter", "Truck deleted: " + truck.getId());
+            } else {
+                Log.e("TruckAdapter", "Failed to delete truck: " + truck.getId());
+            }
+        });
+    }
+
 
     @Override
     public int getItemCount() {

@@ -233,6 +233,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
 
+    public void deletePost(Post post, int position) {
+        // Use the user ID associated with the post
+        String postUserId = post.getUserId();
+        DatabaseReference postRef = FirebaseDatabase.getInstance().getReference("users")
+                .child(postUserId)
+                .child("posts")
+                .child(post.getId());
+        postRef.removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                postList.remove(position);
+                notifyItemRemoved(position);
+                Log.d("PostAdapter", "Post deleted: " + post.getId());
+            } else {
+                Log.e("PostAdapter", "Failed to delete post: " + post.getId());
+            }
+        });
+    }
+
+
     @Override
     public int getItemCount() {
         return postList.size();
